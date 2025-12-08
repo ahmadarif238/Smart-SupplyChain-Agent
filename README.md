@@ -345,10 +345,6 @@ python -m pytest tests/
 # Test negotiation flow
 python tests/test_negotiation_flow.py
 
-# Verify adaptive learning
-python verify_adaptive_learning.py
-```
-
 ---
 
 ## 🎓 Learning Resources
