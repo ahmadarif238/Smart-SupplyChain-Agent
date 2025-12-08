@@ -1,3 +1,5 @@
+![Smart Supply Chain Agent Banner](docs/banner.png)
+
 # 🤖 Smart Supply Chain Agent
 > **Production-Grade Autonomous Multi-Agent System**
 
