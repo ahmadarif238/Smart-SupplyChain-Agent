@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+myenv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.log
+.env
+*.db
+*.sqlite
+
+# Node.js (for frontend)
+react-app/node_modules/
+react-app/dist/
+react-app/build/
+
+# Tests
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Docs
+docs/_build/
+
+# Temporary files
+*.tmp
+*.bak
+uvicorn_errors.log
