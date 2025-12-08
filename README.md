@@ -296,7 +296,6 @@ sequenceDiagram
 | **Real-time** | Server-Sent Events | Live streaming of agent activities |
 | **Visualization** | Recharts | Interactive charts and graphs |
 | **Authentication** | JWT | Secure token-based auth |
-| **Authentication** | JWT | Secure token-based auth |
 
 
 
