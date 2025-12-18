@@ -68,6 +68,6 @@ This system is designed to be plugged into real businesses today.
 
 *   **Current State**: Uses simulated data for demonstration.
 *   **Production Ready**: The "Fetch Data" module can be swapped in 1 hour to pull live sales from **Shopify, Amazon, or ERPs**.
-*   **Scalable**: Built on enterprise-grade technology (FastAPI, PostgreSQL, Docker).
+*   **Scalable**: Built on enterprise-grade technology (FastAPI, Langgraph, PostgreSQL, Docker).
 
 **It turns Supply Chain from a "Spreadsheet Problem" into an "Automated Solution."**
