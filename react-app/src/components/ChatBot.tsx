@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { apiService } from '../api';
-import { FiMessageSquare, FiX, FiSend, FiMinimize2 } from 'react-icons/fi';
+import { FiMessageSquare, FiSend, FiMinimize2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
