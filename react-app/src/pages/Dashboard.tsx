@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Activity, TrendingUp, TrendingDown, AlertCircle, Zap, RefreshCw, Play, ArrowUpRight, DollarSign, Package, Award, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, AlertCircle, Zap, RefreshCw, Play, DollarSign, Package, Award} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { apiService } from '../api';
