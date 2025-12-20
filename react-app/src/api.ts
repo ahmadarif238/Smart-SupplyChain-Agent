@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import axios from 'axios';
 
 // This looks for a Vercel variable first, then falls back to localhost for your computer
