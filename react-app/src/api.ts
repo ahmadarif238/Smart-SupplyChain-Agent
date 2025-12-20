@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import axios from 'axios';
 
-// This looks for a Vercel variable first, then falls back to localhost for your computer
+// Bypass strict tsc check by using (import.meta as any)
 const API_BASE = (import.meta as any).env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 const api = axios.create({
