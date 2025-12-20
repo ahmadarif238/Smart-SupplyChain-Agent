@@ -78,25 +78,18 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Smart Supply Chain AI Agent", lifespan=lifespan)
 
 # Enable CORS for React frontend
-raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000")
-origins = [origin.strip() for origin in raw_origins.split(",")]
-
-# Add 127.0.0.1 variants just in case
-if "http://localhost:5173" in origins:
-    origins.append("http://127.0.0.1:5173")
-if "http://localhost:3000" in origins:
-    origins.append("http://127.0.0.1:3000")
+# Allow all origins for the portfolio deployment
+origins = ["*"]
 
 logger.info(f"Allowed CORS Origins: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Only allow trusted origins
-    allow_credentials=True,
+    allow_origins=["*"], 
+    allow_credentials=False, # Must be False if allow_origins is ["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(
