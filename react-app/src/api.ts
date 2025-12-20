@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 import axios from 'axios';
 
-// Bypass strict tsc check by using (import.meta as any)
-const API_BASE = (import.meta as any).env.VITE_API_URL || 'http://127.0.0.1:8000';
+// Bypass the variable and point directly to Hugging Face
+const API_BASE = 'https://arifantarctic7-smart-supply-chain-agent.hf.space';
 
 const api = axios.create({
   baseURL: API_BASE,
