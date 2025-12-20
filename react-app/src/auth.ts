@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE = (import.meta as any).env.VITE_API_BASE || 'http://127.0.0.1:8000';
+// 1. Use VITE_API_URL (to match Vercel) 
+// 2. Hardcode the fallback to Hugging Face to be safe
+const API_BASE = (import.meta as any).env.VITE_API_URL || 'https://arifantarctic7-smart-supply-chain-agent.hf.space';
 
 let token: string | null = localStorage.getItem('auth_token');
 
@@ -10,6 +12,8 @@ const authApi = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// ... rest of the file
 
 // Add Authorization header to all requests
 authApi.interceptors.request.use((config) => {
