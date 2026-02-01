@@ -2,6 +2,9 @@ import axios from 'axios';
 
 const API_BASE = (import.meta as any).env.VITE_API_BASE || 'http://127.0.0.1:8000';
 
+// DEMO MODE: Set to true for public demo (no login required)
+const DEMO_MODE = true;
+
 let token: string | null = localStorage.getItem('auth_token');
 
 const authApi = axios.create({
@@ -11,20 +14,22 @@ const authApi = axios.create({
   },
 });
 
-// Add Authorization header to all requests
+// Add Authorization header to all requests (only if not in demo mode)
 authApi.interceptors.request.use((config) => {
-  const currentToken = localStorage.getItem('auth_token');
-  if (currentToken) {
-    config.headers.Authorization = `Bearer ${currentToken}`;
+  if (!DEMO_MODE) {
+    const currentToken = localStorage.getItem('auth_token');
+    if (currentToken) {
+      config.headers.Authorization = `Bearer ${currentToken}`;
+    }
   }
   return config;
 });
 
-// Handle 401 responses
+// Handle 401 responses (disabled in demo mode)
 authApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (!DEMO_MODE && error.response?.status === 401) {
       logout();
       window.location.href = '/login';
     }
@@ -33,6 +38,11 @@ authApi.interceptors.response.use(
 );
 
 export const login = async (username: string, password: string) => {
+  if (DEMO_MODE) {
+    // In demo mode, simulate successful login
+    return { access_token: 'demo_token', token_type: 'bearer' };
+  }
+
   console.log('Auth: Attempting login for', username);
   const formData = new FormData();
   formData.append('username', username);
@@ -62,6 +72,8 @@ export const logout = () => {
 
 export const getToken = () => token || localStorage.getItem('auth_token');
 
-export const isAuthenticated = () => !!getToken();
+// DEMO MODE: Always return true to skip login
+export const isAuthenticated = () => DEMO_MODE ? true : !!getToken();
 
 export default authApi;
+

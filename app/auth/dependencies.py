@@ -1,4 +1,4 @@
-"""Auth utilities for routes"""
+"""Auth utilities for routes - DEMO MODE: Authentication disabled for public access"""
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -8,11 +8,25 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+# DEMO MODE: Set to True for public demo (no login required)
+DEMO_MODE = True
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=not DEMO_MODE)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
-    """Validate JWT token and return current user from DB"""
+    """
+    Validate JWT token and return current user.
+    In DEMO_MODE, returns a dummy user without requiring authentication.
+    """
+    # DEMO MODE: Return a dummy user for public access
+    if DEMO_MODE:
+        class DemoUser:
+            id = 1
+            username = "demo_user"
+            email = "demo@example.com"
+        return DemoUser()
+    
     from app.models.database import SessionLocal
     from app.models.schemas import User
     
@@ -38,3 +52,4 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         return user
     finally:
         db.close()
+

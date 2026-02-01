@@ -62,6 +62,7 @@ export const apiService = {
     list: () => api.get('/orders/'),
     create: (sku: string, quantity: number) => api.post('/orders/', { sku, quantity }),
     recommend: () => api.get('/orders/recommend'),
+    updateStatus: (id: number, status: string) => api.patch(`/orders/${id}/status?status=${status}`),
   },
 
   // Alerts

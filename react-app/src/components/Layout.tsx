@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-    BarChart3, ShoppingCart, AlertCircle, Zap, Home, Truck,
-    Brain, LogOut, Cpu, Menu, ChevronRight, DollarSign, Database, TrendingUp
+    ShoppingCart, Home, Truck,
+    Brain, LogOut, Cpu, Menu, ChevronRight
 } from 'lucide-react';
 import { logout } from '../auth';
 
@@ -27,14 +27,15 @@ export default function Layout({ children, setAuthenticated }: LayoutProps) {
     const navItems = [
         { path: '/', icon: Home, label: 'Dashboard' },
         { path: '/inventory', icon: ShoppingCart, label: 'Inventory' },
-        { path: '/sales', icon: BarChart3, label: 'Sales' },
         { path: '/orders', icon: Truck, label: 'Orders' },
-        { path: '/alerts', icon: AlertCircle, label: 'Alerts' },
-        { path: '/agent', icon: Zap, label: 'Agent Control' },
-        { path: '/intelligence', icon: Brain, label: 'AI Intelligence' },
-        { path: '/finance', icon: DollarSign, label: 'Finance Dashboard' },
-        { path: '/finance-analytics', icon: TrendingUp, label: 'Finance Analytics' },
-        { path: '/memory', icon: Database, label: 'Memory Explorer' },
+        // { path: '/sales', icon: BarChart3, label: 'Sales' },
+        // { path: '/alerts', icon: AlertCircle, label: 'Alerts' },
+        // { path: '/agent', icon: Zap, label: 'Agent Control' },
+        // { path: '/intelligence', icon: Brain, label: 'AI Intelligence' },
+        // { path: '/finance', icon: DollarSign, label: 'Finance Dashboard' },
+        // { path: '/finance-analytics', icon: TrendingUp, label: 'Finance Analytics' },
+        // { path: '/memory', icon: Database, label: 'Memory Explorer' },
+        { path: '/settings', icon: Cpu, label: 'Settings' },
     ];
 
     return (

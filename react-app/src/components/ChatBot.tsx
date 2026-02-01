@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { apiService } from '../api';
-import { FiMessageSquare, FiX, FiSend, FiMinimize2 } from 'react-icons/fi';
+import { FiMessageSquare, FiSend, FiMinimize2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
@@ -123,8 +123,8 @@ const ChatBot: React.FC = () => {
                                 >
                                     <div
                                         className={`max-w-[80%] p-3 rounded-2xl shadow-sm text-sm ${msg.sender === 'user'
-                                                ? 'bg-blue-600 text-white rounded-br-none'
-                                                : 'bg-white text-gray-800 border border-gray-100 rounded-bl-none'
+                                            ? 'bg-blue-600 text-white rounded-br-none'
+                                            : 'bg-white text-gray-800 border border-gray-100 rounded-bl-none'
                                             }`}
                                     >
                                         {msg.text}
@@ -158,8 +158,8 @@ const ChatBot: React.FC = () => {
                                     onClick={handleSend}
                                     disabled={isLoading || !input.trim()}
                                     className={`p-2 rounded-lg text-white transition-colors ${isLoading || !input.trim()
-                                            ? 'bg-blue-300 cursor-not-allowed'
-                                            : 'bg-blue-600 hover:bg-blue-700'
+                                        ? 'bg-blue-300 cursor-not-allowed'
+                                        : 'bg-blue-600 hover:bg-blue-700'
                                         }`}
                                 >
                                     <FiSend />

@@ -4,30 +4,48 @@ import { Toaster } from 'react-hot-toast';
 import { isAuthenticated } from './auth';
 import Dashboard from './pages/Dashboard';
 import { Inventory } from './pages/Inventory';
-import { Sales } from './pages/Sales';
 import Orders from './pages/Orders';
-import Alerts from './pages/Alerts';
-import AgentComplete from './pages/AgentComplete';
-import AgentIntelligence from './pages/AgentIntelligence';
-import FinanceDashboard from './pages/FinanceDashboard';
-import FinanceAnalytics from './pages/FinanceAnalytics';
-import MemoryExplorer from './pages/MemoryExplorer';
+import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Layout from './components/Layout';
 import ChatBot from './components/ChatBot';
+import OnboardingModal from './components/OnboardingModal';
 import './App.css';
 
+// DEMO MODE: Set to true for public demo (no login required)
+const DEMO_MODE = true;
+
 function App() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(DEMO_MODE);
+  const [loading, setLoading] = useState(!DEMO_MODE);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if user should see onboarding (first visit)
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('hasSeenOnboarding', 'true');
+  };
+
+  useEffect(() => {
+    // DEMO MODE: Skip auth check
+    if (DEMO_MODE) {
+      setAuthenticated(true);
+      setLoading(false);
+      return;
+    }
+
     // Check if user is authenticated
     const checkAuth = () => {
       const isAuth = isAuthenticated();
-      console.log('Auth check:', { isAuth, authenticated });
       if (isAuth) {
         setAuthenticated(true);
       } else {
@@ -48,16 +66,13 @@ function App() {
     };
   }, []);
 
-  // React to authentication state changes
+  // React to authentication state changes (disabled in demo mode)
   useEffect(() => {
-    console.log('Auth state changed:', authenticated);
-    if (!authenticated && location.pathname !== '/login' && !loading) {
-      console.log('Redirecting to login...');
+    if (!DEMO_MODE && !authenticated && location.pathname !== '/login' && !loading) {
       navigate('/login', { replace: true });
     }
   }, [authenticated, loading, location, navigate]);
 
-  // Show loading screen while checking auth
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
@@ -69,7 +84,6 @@ function App() {
     );
   }
 
-  // Show login page if not authenticated
   if (!authenticated) {
     return <Login />;
   }
@@ -100,18 +114,18 @@ function App() {
           },
         }}
       />
+
+      {/* Onboarding Modal - Shows on first visit */}
+      {showOnboarding && (
+        <OnboardingModal onClose={handleCloseOnboarding} />
+      )}
+
       <Layout setAuthenticated={setAuthenticated}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/inventory" element={<Inventory />} />
-          <Route path="/sales" element={<Sales />} />
           <Route path="/orders" element={<Orders />} />
-          <Route path="/alerts" element={<Alerts />} />
-          <Route path="/agent" element={<AgentComplete />} />
-          <Route path="/intelligence" element={<AgentIntelligence />} />
-          <Route path="/finance" element={<FinanceDashboard />} />
-          <Route path="/finance-analytics" element={<FinanceAnalytics />} />
-          <Route path="/memory" element={<MemoryExplorer />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
         <ChatBot />
       </Layout>
@@ -120,3 +134,4 @@ function App() {
 }
 
 export default App;
+

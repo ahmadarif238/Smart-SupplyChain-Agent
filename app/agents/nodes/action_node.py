@@ -69,9 +69,9 @@ class ActionNode:
             product_name = product.product_name if product else sku
             supplier = product.supplier if product and hasattr(product, "supplier") else "Default"
 
-            # Check for approval requirement
-            requires_approval = decision.get("requires_approval", False)
-            approval_reason = decision.get("approval_reason", "")
+            # Check for approval requirement - Default to True for human-in-the-loop
+            requires_approval = decision.get("requires_approval", True)  # Changed: Now defaults to True
+            approval_reason = decision.get("approval_reason", "Agent-drafted order")
             
             status = "Needs Approval" if requires_approval else "Pending"
             
@@ -141,13 +141,12 @@ class ActionNode:
             db.commit()
             db.refresh(order)
 
-            # SIMULATION: Immediate replenishment for demo purposes
-            # In a real system, this would happen on "Receive"
-            if product:
-                product.quantity += qty
-                db.add(product)
-                db.commit()
-                logger.info(f"📦 Immediate replenishment: {sku} stock increased by {qty} to {product.quantity}")
+            # SIMULATION: REMOVED Auto-Replenishment
+            # In a real system, stock only updates on "Receive", not "Order"
+            # if product:
+            #     product.quantity += qty
+            #     db.add(product)
+            #     db.commit()
 
             logger.info(
                 f"Order created: {order.id} for {sku}, qty {qty}, urgency {urgency}"

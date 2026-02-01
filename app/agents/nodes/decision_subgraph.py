@@ -207,7 +207,9 @@ def optimize_cost_node(state: CycleState) -> CycleState:
             order_qty = 0
             urgency = UrgencyLevel.LOW
             
-            logger.info(f"⚖️ [Sub-step] {sku}: Scoring Urgency & Stockout Risk (Day to Stockout: {days_until_stockout:.1f} days)...")
+            days_str = f"{days_until_stockout:.1f}" if days_until_stockout is not None else "N/A"
+            logger.info(f"⚖️ [Sub-step] {sku}: Scoring Urgency & Stockout Risk (Days to Stockout: {days_str})...")
+
             
             if reorder_required:
                 target_stock = reorder_point + eoq

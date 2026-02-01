@@ -113,3 +113,13 @@ def recommend_orders(db: Session = Depends(get_db), current_user = Depends(get_c
         }
     }
 
+@router.patch("/{order_id}/status")
+def update_order_status(order_id: int, status: str, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    order = db.query(schemas.Orders).filter(schemas.Orders.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    order.status = status
+    db.commit()
+    db.refresh(order)
+    return {"message": "Order status updated", "data": serialize_model(order)}

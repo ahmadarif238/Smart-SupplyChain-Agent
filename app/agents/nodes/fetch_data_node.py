@@ -41,13 +41,12 @@ def fetch_data_node(state: CycleState) -> CycleState:
             for item in inventory
         }
 
-        # Inject semantic memory
-        from app.agents.langgraph_workflow import _memory_manager
-        for sku, data in state.inventory_data.items():
-            facts = _memory_manager.retrieve_relevant_facts(sku)
-            if facts:
-                data["semantic_memory"] = facts
-                logger.info(f"[{state.cycle_id}] Loaded {len(facts)} facts for {sku}")
+        # Memory injection disabled to avoid circular import
+        # for sku, data in state.inventory_data.items():
+        #     facts = _memory_manager.retrieve_relevant_facts(sku)
+        #     if facts:
+        #         data["semantic_memory"] = facts
+        #         logger.info(f"[{state.cycle_id}] Loaded {len(facts)} facts for {sku}")
         
         logger.info(f"[{state.cycle_id}] Fetched {len(state.inventory_data)} SKUs")
         logger.info(f"[{state.cycle_id}] Inventory SKUs: {list(state.inventory_data.keys())}")

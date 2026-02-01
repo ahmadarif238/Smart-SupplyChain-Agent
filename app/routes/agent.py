@@ -321,68 +321,82 @@ def list_jobs(limit: int = 50, db: Session = Depends(get_db), current_user = Dep
 @router.get("/finance-summary")
 def get_finance_summary(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     """Get finance summary from persisted jobs"""
-    # Get last 10 completed jobs
+    # 1. Load Dynamic Budget
+    import os
+    current_budget = 5000.0
+    try:
+        config_path = os.path.join("app", "config", "dynamic_settings.json")
+        if os.path.exists(config_path):
+            with open(config_path, "r") as f:
+                data = json.load(f)
+                current_budget = float(data.get("budget", 5000.0))
+    except:
+        pass
+
+    # Get last 10 completed jobs for spending history
     completed_jobs = db.query(schemas.Job).filter(
         schemas.Job.status == "completed",
         schemas.Job.result.isnot(None)
     ).order_by(schemas.Job.completed_at.desc()).limit(10).all()
     
-    if not completed_jobs:
-        return {
-            "current_budget": 5000,
-            "spent": 0, "remaining": 5000,
-            "approved_count": 0, "rejected_count": 0, "override_count": 0,
-            "avg_roi": 0, "total_value": 0, "cycles_analyzed": 0
-        }
-    
-    total_budget = 0
     total_spent = 0
     total_overrides = 0
     total_roi_sum = 0
     roi_count = 0
     total_approved = 0
     
-    for job in completed_jobs:
-        try:
-            result = json.loads(job.result)
-            
-            # Extract metrics
-            actions = result.get("actions", [])
-            total_approved += len(actions)
-            
-            decisions = result.get("decisions", [])
-            for d in decisions:
-                if d.get("override_approved"):
-                    total_overrides += 1
-                if d.get("finance_metrics", {}).get("roi"):
-                    total_roi_sum += d["finance_metrics"]["roi"]
-                    roi_count += 1
-                    
-            # Try to parse feedback for budget
-            fb = result.get("finance_feedback", "")
-            if "Budget:" in fb:
-                import re
-                b_match = re.search(r'Budget: \$([0-9,]+)', fb)
-                s_match = re.search(r'Spent: \$([0-9,]+)', fb)
-                if b_match: total_budget = float(b_match.group(1).replace(',', ''))
-                if s_match: total_spent += float(s_match.group(1).replace(',', ''))
+    if completed_jobs:
+        for job in completed_jobs:
+            try:
+                result = json.loads(job.result)
                 
-        except Exception as e:
-            logger.error(f"Error parsing job {job.id}: {e}")
-            continue
+                # Extract metrics
+                actions = result.get("actions", [])
+                total_approved += len(actions)
+                
+                decisions = result.get("decisions", [])
+                for d in decisions:
+                    if d.get("override_approved"):
+                        total_overrides += 1
+                    if d.get("finance_metrics", {}).get("roi"):
+                        total_roi_sum += d["finance_metrics"]["roi"]
+                        roi_count += 1
+                    
+            except Exception as e:
+                logger.error(f"Error parsing job {job.id}: {e}")
+                continue
+    
+    # Calculate ACTUAL spending from RECENT approved orders (last 7 days only)
+    # This prevents old historical orders from eating up the current budget
+    from datetime import datetime, timedelta
+    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    
+    approved_orders = db.query(schemas.Orders).filter(
+        schemas.Orders.status.in_(["Approved", "Pending", "Completed"]),
+        schemas.Orders.order_date >= seven_days_ago  # Only recent orders
+    ).all()
+    
+    for order in approved_orders:
+        # Get unit price from inventory
+        inventory_item = db.query(schemas.Inventory).filter(
+            schemas.Inventory.sku == order.sku
+        ).first()
+        
+        if inventory_item and inventory_item.unit_price:
+            total_spent += order.quantity * inventory_item.unit_price
             
+    remaining = max(0, current_budget - total_spent)
     avg_roi = total_roi_sum / roi_count if roi_count > 0 else 0
-    remaining = total_budget - total_spent if total_budget > 0 else 0
     
     return {
-        "current_budget": total_budget or 5000,
-        "spent": total_spent,
-        "remaining": max(remaining, 0),
+        "current_budget": current_budget,
+        "spent": round(total_spent, 2),
+        "remaining": round(remaining, 2),
         "approved_count": total_approved,
         "rejected_count": 0,
         "override_count": total_overrides,
         "avg_roi": round(avg_roi, 2),
-        "total_value": total_spent,
+        "total_value": round(total_spent, 2),
         "cycles_analyzed": len(completed_jobs)
     }
 
@@ -448,3 +462,33 @@ Be concise and executive-focused."""
     except Exception as e:
         logger.error(f"Summary generation failed: {e}")
         return {"error": f"Summary generation failed: {str(e)}"}, 500
+@router.post("/settings/budget")
+def update_budget(data: dict, current_user = Depends(get_current_user)):
+    """Update agent operating budget dynamically"""
+    import os
+    
+    new_budget = data.get("budget")
+    if new_budget is None:
+        raise HTTPException(status_code=400, detail="Budget is required")
+        
+    try:
+        config_path = os.path.join("app", "config", "dynamic_settings.json")
+        os.makedirs(os.path.dirname(config_path), exist_ok=True)
+        
+        settings_data = {}
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, "r") as f:
+                    settings_data = json.load(f)
+            except:
+                pass
+                
+        settings_data["budget"] = float(new_budget)
+        
+        with open(config_path, "w") as f:
+            json.dump(settings_data, f)
+            
+        return {"message": "Budget updated successfully", "budget": new_budget}
+    except Exception as e:
+        logger.error(f"Failed to save settings: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

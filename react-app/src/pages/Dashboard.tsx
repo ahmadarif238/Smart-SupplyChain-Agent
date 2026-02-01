@@ -1,61 +1,42 @@
 import { useState, useEffect } from 'react';
-import { Activity, TrendingUp, TrendingDown, AlertCircle, Zap, RefreshCw, Play, ArrowUpRight, DollarSign, Package, Award, ArrowDownRight } from 'lucide-react';
+import { Play, CheckCircle, AlertTriangle, DollarSign, Package, Clock, Activity, MessageSquare, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { apiService } from '../api';
 import Card from '../components/ui/Card';
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({
-    inventory: 0,
-    orders: 0,
-    alerts: 0,
-    totalValue: 0,
-  });
-
-  const [trends, setTrends] = useState({
-    inventoryTrend: 0,
-    ordersTrend: 0,
-    valueTrend: 0,
-    negotiationWins: 0,
-  });
-
-  const [sparklineData, setSparklineData] = useState<any>({
-    inventory: [],
-    orders: [],
-    value: [],
-  });
-
-  const [systemStatus, setSystemStatus] = useState<any>(null);
-  const [agentRunning, setAgentRunning] = useState(false);
-  const [agentJobs, setAgentJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [previousStats, setPreviousStats] = useState<any>(null);
+  const [stats, setStats] = useState({
+    budgetRemaining: 0,
+    pendingApprovals: 0,
+    activeAlerts: 0,
+    inventoryCount: 0
+  });
+  const [pendingOrders, setPendingOrders] = useState<any[]>([]);
+  const [agentStatus, setAgentStatus] = useState<string>('idle');
+  const [recentJobs, setRecentJobs] = useState<any[]>([]);
+  const [narrative, setNarrative] = useState<string>("");
 
-  // Fetch dashboard data
-  const fetchDashboardData = async () => {
+  const fetchData = async () => {
     try {
-      setLoading(true);
+      // 1. Fetch Orders (for Pending Approvals)
+      const ordersRes = await apiService.orders.list();
+      const allOrders = ordersRes.data || [];
+      const pending = allOrders.filter((o: any) => o.status === 'Needs Approval');
+      setPendingOrders(pending);
 
-      // Check system health
-      const healthRes = await apiService.health();
-      setSystemStatus(healthRes.data);
-
-      // Fetch all data in parallel
-      const [inventoryRes, ordersRes, alertsRes, jobsRes, financeRes] = await Promise.all([
-        apiService.inventory.list().catch(() => ({ data: [] })),
-        apiService.orders.list().catch(() => ({ data: [] })),
-        apiService.alerts.list().catch(() => ({ data: [] })),
-        apiService.agent.jobs().catch(() => ({ data: [] })),
-        apiService.get('/agent/finance-summary').catch(() => ({ data: null })),
-      ]);
-
-      const inventory = inventoryRes.data || [];
-      const orders = ordersRes.data || [];
+      // 2. Fetch Alerts
+      const alertsRes = await apiService.alerts.list();
       const alerts = alertsRes.data || [];
-      const financeData = financeRes.data;
 
-      // Handle jobs response
+      // 3. Fetch Inventory
+      const invRes = await apiService.inventory.list();
+
+      // 4. Fetch Finance Summary (for Budget)
+      const financeRes = await apiService.agent.financeSummary().catch(() => ({ data: { budget_remaining: 0 } }));
+
+      // 5. Fetch Agent Jobs
+      const jobsRes = await apiService.agent.jobs();
       let jobs = [];
       if (Array.isArray(jobsRes.data)) {
         jobs = jobsRes.data;
@@ -64,106 +45,75 @@ export default function Dashboard() {
       } else if (jobsRes.data?.jobs) {
         jobs = jobsRes.data.jobs;
       }
+      setRecentJobs(jobs.slice(0, 5)); // Keep top 5
 
-      // Calculate total value
-      const totalValue = inventory.reduce((sum: number, item: any) => {
-        return sum + ((item.quantity || 0) * (item.unit_price || 0));
-      }, 0);
+      // Check if running
+      const isRunning = jobs.some((j: any) => j.status === 'running');
+      setAgentStatus(isRunning ? 'running' : 'idle');
 
-      const currentStats = {
-        inventory: inventory.length,
-        orders: orders.length,
-        alerts: alerts.length,
-        totalValue,
-      };
-
-      // Calculate trends (compare with previous)
-      if (previousStats) {
-        setTrends({
-          inventoryTrend: calculatePercentageChange(previousStats.inventory, currentStats.inventory),
-          ordersTrend: calculatePercentageChange(previousStats.orders, currentStats.orders),
-          valueTrend: calculatePercentageChange(previousStats.totalValue, currentStats.totalValue),
-          negotiationWins: financeData?.override_count || 0,
-        });
-      } else {
-        // First load - generate mock trend data
-        setTrends({
-          inventoryTrend: 12,
-          ordersTrend: 8,
-          valueTrend: 15,
-          negotiationWins: financeData?.override_count || 0,
-        });
-      }
-
-      // Generate sparkline data (last 7 data points)
-      setSparklineData({
-        inventory: generateSparklineData(currentStats.inventory, 7),
-        orders: generateSparklineData(currentStats.orders, 7),
-        value: generateSparklineData(currentStats.totalValue / 1000, 7),
+      const budget = financeRes.data?.remaining ?? financeRes.data?.current_budget ?? 0;
+      setStats({
+        budgetRemaining: budget,
+        pendingApprovals: pending.length,
+        activeAlerts: alerts.length,
+        inventoryCount: invRes.data?.length || 0
       });
 
-      setStats(currentStats);
-      setPreviousStats(currentStats);
-      setAgentJobs(jobs);
-      setAgentRunning(jobs.some((j: any) => j.status === 'running'));
+      // GENERATE NARRATIVE
+      let story = "I've analyzed your supply chain. ";
+      if (pending.length > 0) {
+        story += `I found ${pending.length} items that need restocking and drafted orders for them. Please review the 'Action Required' section below. `;
+      } else {
+        story += "Everything looks healthy. No immediate actions are needed by you. ";
+      }
+
+      if (budget < 1000) {
+        story += " Warning: Your operating budget is very low ($" + budget.toLocaleString() + "). I might not be able to place necessary orders. Please visit Settings to add funds. ";
+      }
+
+      setNarrative(story);
+
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error("Failed to fetch dashboard data:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Calculate percentage change
-  const calculatePercentageChange = (oldVal: number, newVal: number) => {
-    if (oldVal === 0) return newVal > 0 ? 100 : 0;
-    return ((newVal - oldVal) / oldVal) * 100;
-  };
-
-  // Generate sparkline data (mock for now, replace with real historical data)
-  const generateSparklineData = (current: number, points: number) => {
-    const data = [];
-    for (let i = points - 1; i >= 0; i--) {
-      const variance = (Math.random() - 0.5) * 0.2; // ±10% variance
-      const value = Math.max(0, current * (1 + variance * (i / points)));
-      data.push({ value });
-    }
-    return data;
-  };
-
   useEffect(() => {
-    fetchDashboardData();
-    const interval = setInterval(fetchDashboardData, 30000); // Refresh every 30 seconds
+    fetchData();
+    const interval = setInterval(fetchData, 10000); // Poll every 10s
     return () => clearInterval(interval);
   }, []);
 
-  // Mini Sparkline Component
-  const MiniSparkline = ({ data, color }: { data: any[], color: string }) => (
-    <ResponsiveContainer width="100%" height={40}>
-      <LineChart data={data}>
-        <Line
-          type="monotone"
-          dataKey="value"
-          stroke={color}
-          strokeWidth={2}
-          dot={false}
-        />
-      </LineChart>
-    </ResponsiveContainer>
-  );
+  const handleStartAgent = async () => {
+    try {
+      setAgentStatus('running');
+      await apiService.agent.runOnce();
+      // Poll will catch the update
+      setTimeout(fetchData, 1000);
+    } catch (error) {
+      console.error("Failed to start agent:", error);
+      setAgentStatus('error');
+    }
+  };
 
-  // Trend Indicator Component
-  const TrendIndicator = ({ value }: { value: number }) => {
-    const isPositive = value >= 0;
-    const Icon = isPositive ? TrendingUp : TrendingDown;
-    const colorClass = isPositive ? 'text-green-600' : 'text-red-600';
+  const handleApproveOrder = async (orderId: number) => {
+    try {
+      await apiService.orders.updateStatus(orderId, 'Approved');
+      fetchData(); // Refresh list
+    } catch (error) {
+      console.error("Failed to approve order:", error);
+    }
+  };
 
-    return (
-      <div className={`flex items-center gap-1 text-xs font-medium ${colorClass}`}>
-        <Icon className="w-3 h-3" />
-        <span>{Math.abs(value).toFixed(1)}%</span>
-        <span className="text-slate-400 ml-1">vs last update</span>
-      </div>
-    );
+  const handleRejectOrder = async (orderId: number) => {
+    try {
+      await apiService.orders.updateStatus(orderId, 'Rejected');
+      fetchData();
+    } catch (error) {
+      console.error("Failed to reject order:", error);
+    }
   };
 
   if (loading) {
@@ -171,208 +121,214 @@ export default function Dashboard() {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-500 font-medium">Loading dashboard...</p>
+          <p className="text-slate-500 font-medium">Loading Supply Chain Center...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      {/* Welcome Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dashboard Overview</h1>
-          <p className="text-slate-500">Welcome back! Here's what's happening with your supply chain.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-medium border ${systemStatus?.status === 'healthy'
-            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-            : 'bg-red-50 text-red-700 border-red-200'
-            }`}>
-            {systemStatus?.status === 'healthy' ? 'System Online' : 'System Offline'}
-          </span>
-          {trends.negotiationWins > 0 && (
-            <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200 flex items-center gap-1">
-              <Award className="w-3 h-3" />
-              {trends.negotiationWins} Negotiation Win{trends.negotiationWins !== 1 ? 's' : ''}
-            </span>
-          )}
-          <button
-            onClick={fetchDashboardData}
-            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-          >
-            <RefreshCw className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Stats Grid with Sparklines */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-l-4 border-l-blue-500">
-          <div className="flex justify-between items-start mb-3">
-            <div className="flex-1">
-              <p className="text-sm font-medium text-slate-500">Total Inventory</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">{stats.inventory}</h3>
-              <TrendIndicator value={trends.inventoryTrend} />
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* NARRATIVE SECTION */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+              <MessageSquare className="w-6 h-6 text-white" />
             </div>
-            <div className="p-3 bg-blue-50 rounded-xl">
-              <Package className="w-6 h-6 text-blue-600" />
-            </div>
+            <h2 className="text-xl font-bold">Agent Update</h2>
           </div>
-          <MiniSparkline data={sparklineData.inventory} color="#3b82f6" />
-        </Card>
+          <p className="text-lg leading-relaxed font-medium opacity-95 max-w-3xl">
+            "{narrative}"
+          </p>
 
-        <Card className="border-l-4 border-l-purple-500">
-          <div className="flex justify-between items-start mb-3">
-            <div className="flex-1">
-              <p className="text-sm font-medium text-slate-500">Active Orders</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">{stats.orders}</h3>
-              <TrendIndicator value={trends.ordersTrend} />
-            </div>
-            <div className="p-3 bg-purple-50 rounded-xl">
-              <TrendingUp className="w-6 h-6 text-purple-600" />
-            </div>
-          </div>
-          <MiniSparkline data={sparklineData.orders} color="#7c3aed" />
-        </Card>
-
-        <Card className="border-l-4 border-l-orange-500">
-          <div className="flex justify-between items-start mb-3">
-            <div className="flex-1">
-              <p className="text-sm font-medium text-slate-500">Active Alerts</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">{stats.alerts}</h3>
-              <div className="flex items-center mt-2 text-xs text-orange-600">
-                <AlertCircle className="w-3 h-3 mr-1" />
-                <span className="font-medium">Action Needed</span>
-              </div>
-            </div>
-            <div className="p-3 bg-orange-50 rounded-xl">
-              <AlertCircle className="w-6 h-6 text-orange-600" />
-            </div>
-          </div>
-          <div className="h-10 flex items-center justify-center">
-            {stats.alerts > 0 ? (
-              <Link to="/alerts" className="text-xs text-orange-600 hover:text-orange-700 font-medium">
-                View Alerts →
-              </Link>
-            ) : (
-              <p className="text-xs text-slate-400">No active alerts</p>
-            )}
-          </div>
-        </Card>
-
-        <Card className="border-l-4 border-l-emerald-500">
-          <div className="flex justify-between items-start mb-3">
-            <div className="flex-1">
-              <p className="text-sm font-medium text-slate-500">Total Value</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">${(stats.totalValue / 1000).toFixed(1)}K</h3>
-              <TrendIndicator value={trends.valueTrend} />
-            </div>
-            <div className="p-3 bg-emerald-50 rounded-xl">
-              <DollarSign className="w-6 h-6 text-emerald-600" />
-            </div>
-          </div>
-          <MiniSparkline data={sparklineData.value} color="#10b981" />
-        </Card>
-      </div>
-
-      {/* Agent Status Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2" title="Agent Activity">
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 mb-6">
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-full ${agentRunning ? 'bg-green-100 animate-pulse' : 'bg-slate-200'}`}>
-                <Zap className={`w-6 h-6 ${agentRunning ? 'text-green-600' : 'text-slate-500'}`} />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900">Autonomous Agent</h3>
-                <p className="text-sm text-slate-500">
-                  Status: <span className={agentRunning ? 'text-green-600 font-medium' : 'text-slate-600'}>
-                    {agentRunning ? 'Running Cycle...' : 'Idle - Waiting for Schedule'}
-                  </span>
-                </p>
-              </div>
-            </div>
-            <Link
-              to="/agent"
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm font-medium shadow-sm shadow-indigo-200"
+          <div className="mt-8 flex gap-4">
+            <button
+              onClick={handleStartAgent}
+              disabled={agentStatus === 'running'}
+              className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg ${agentStatus === 'running'
+                ? 'bg-white/10 text-white/50 cursor-not-allowed'
+                : 'bg-white text-indigo-600 hover:bg-slate-50 active:scale-95'
+                }`}
             >
-              <Play className="w-4 h-4" /> Control Center
-            </Link>
-          </div>
-
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">Recent Jobs</h4>
-            <div className="space-y-3">
-              {agentJobs.slice(0, 3).map((job, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-lg hover:border-indigo-100 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${job.status === 'completed' ? 'bg-emerald-500' :
-                      job.status === 'running' ? 'bg-blue-500 animate-ping' : 'bg-slate-300'
-                      }`} />
-                    <span className="font-mono text-xs text-slate-500">#{job.id?.slice(0, 8) || job.job_id?.slice(0, 8)}</span>
-                    <span className={`text-sm font-medium ${job.status === 'completed' ? 'text-emerald-700' :
-                      job.status === 'running' ? 'text-blue-700' : 'text-slate-700'
-                      }`}>
-                      {job.status}
-                    </span>
-                  </div>
-                  <span className="text-xs text-slate-400">
-                    {new Date(job.created_at).toLocaleTimeString()}
-                  </span>
-                </div>
-              ))}
-              {agentJobs.length === 0 && (
-                <p className="text-sm text-slate-500 italic">No recent jobs found.</p>
+              {agentStatus === 'running' ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"></div>
+                  Agent Working...
+                </>
+              ) : (
+                <>
+                  <Play className="w-5 h-5 fill-current" />
+                  Run New Analysis
+                </>
               )}
+            </button>
+          </div>
+        </div>
+
+        {/* Background blobs */}
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* KPI Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Link to="/settings" className="block transform transition-transform hover:-translate-y-1">
+          <KPI
+            icon={<DollarSign className="w-6 h-6 text-green-600" />}
+            label="Budget Remaining"
+            value={`$${stats.budgetRemaining.toLocaleString()}`}
+            color="bg-green-50"
+            action={stats.budgetRemaining < 1000 ? "Add Funds" : undefined}
+          />
+        </Link>
+        <KPI
+          icon={<Clock className="w-6 h-6 text-orange-600" />}
+          label="Pending Approvals"
+          value={stats.pendingApprovals}
+          color="bg-orange-50"
+          highlight={stats.pendingApprovals > 0}
+        />
+        <KPI
+          icon={<AlertTriangle className="w-6 h-6 text-red-600" />}
+          label="Critical Alerts"
+          value={stats.activeAlerts}
+          color="bg-red-50"
+        />
+        <KPI
+          icon={<Package className="w-6 h-6 text-blue-600" />}
+          label="Total SKUs"
+          value={stats.inventoryCount}
+          color="bg-blue-50"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        {/* Main Section: Action Items (2/3 width) */}
+        <div className="lg:col-span-2 space-y-6">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-indigo-600" />
+            Action Required
+          </h2>
+
+          {pendingOrders.length === 0 ? (
+            <div className="bg-white rounded-xl p-12 text-center border border-slate-100 shadow-sm border-dashed">
+              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-slate-300" />
+              </div>
+              <h3 className="text-lg font-medium text-slate-900">All Caught Up!</h3>
+              <p className="text-slate-500 mt-2">The agent hasn't found any new issues to solve.</p>
             </div>
+          ) : (
+            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden animate-fade-in">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-600">Product</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-600">Qty</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-600">Cost</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-600">Agent Reasoning</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-600 text-right">Decision</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {pendingOrders.map((order) => (
+                      <tr key={order.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="font-bold text-slate-900">{order.product_name}</div>
+                          <div className="text-xs text-slate-400 font-mono">{order.sku}</div>
+                        </td>
+                        <td className="px-6 py-4 font-medium text-slate-700">{order.quantity} units</td>
+                        <td className="px-6 py-4 text-slate-600 font-mono">${(order.total_price || 0).toLocaleString()}</td>
+                        <td className="px-6 py-4 max-w-xs">
+                          <div className="text-sm text-slate-600 italic">
+                            "{parseReason(order.notes)}"
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+                          <button
+                            onClick={() => handleApproveOrder(order.id)}
+                            className="px-3 py-1.5 bg-green-50 text-green-700 text-sm font-bold rounded-lg hover:bg-green-100 transition-colors border border-green-200"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => handleRejectOrder(order.id)}
+                            className="px-3 py-1.5 bg-white text-slate-500 text-sm font-medium rounded-lg hover:bg-slate-100 transition-colors border border-slate-200"
+                          >
+                            Reject
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar: Recent Activity (1/3 width) */}
+        <div className="space-y-6">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-indigo-600" />
+            Recent Activity
+          </h2>
+
+          <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 space-y-4">
+            {recentJobs.length === 0 && <p className="text-slate-500 text-sm">No recent activity.</p>}
+            {recentJobs.map((job, idx) => (
+              <div key={idx} className="flex gap-3 pb-3 border-b last:border-0 border-slate-50">
+                <div className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${job.status === 'completed' ? 'bg-emerald-500' :
+                  job.status === 'running' ? 'bg-blue-500 animate-pulse' : 'bg-slate-300'
+                  }`} />
+                <div>
+                  <p className="text-sm font-medium text-slate-900 capitalize">{job.status}</p>
+                  <p className="text-xs text-slate-500 font-mono">ID: {job.id?.substring(0, 8)}</p>
+                  <span className="text-xs text-slate-400">{new Date(job.created_at).toLocaleString()}</span>
+                </div>
+              </div>
+            ))}
           </div>
-        </Card>
+        </div>
 
-        {/* Quick Actions - Dynamic */}
-        <Card title="Quick Actions">
-          <div className="space-y-3">
-            {stats.alerts > 0 ? (
-              <Link to="/alerts" className="block w-full p-3 text-left text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-lg transition-all transform hover:scale-105 shadow-md">
-                ⚠️ View {stats.alerts} Active Alert{stats.alerts !== 1 ? 's' : ''}
-              </Link>
-            ) : null}
-
-            {agentRunning ? (
-              <Link to="/agent" className="block w-full p-3 text-left text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 rounded-lg transition-all transform hover:scale-105 shadow-md">
-                🔄 Monitor Running Agent
-              </Link>
-            ) : (
-              <Link to="/agent" className="block w-full p-3 text-left text-sm font-medium text-slate-700 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors border border-slate-100 hover:border-indigo-100">
-                🚀 Start New Agent Cycle
-              </Link>
-            )}
-
-            <Link to="/inventory" className="block w-full p-3 text-left text-sm font-medium text-slate-700 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors border border-slate-100 hover:border-indigo-100">
-              📦 Manage Inventory ({stats.inventory} items)
-            </Link>
-
-            {trends.negotiationWins > 0 && (
-              <Link to="/finance-analytics" className="block w-full p-3 text-left text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-lg transition-all transform hover:scale-105 shadow-md">
-                ✨ View {trends.negotiationWins} Negotiation Win{trends.negotiationWins !== 1 ? 's' : ''}
-              </Link>
-            )}
-
-            <Link to="/orders" className="block w-full p-3 text-left text-sm font-medium text-slate-700 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors border border-slate-100 hover:border-indigo-100">
-              🚚 Review Orders ({stats.orders} active)
-            </Link>
-
-            <Link to="/learning" className="block w-full p-3 text-left text-sm font-medium text-slate-700 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors border border-slate-100 hover:border-indigo-100">
-              🧠 Learning Insights
-            </Link>
-
-            <Link to="/memory" className="block w-full p-3 text-left text-sm font-medium text-slate-700 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors border border-slate-100 hover:border-indigo-100">
-              💾 Explore Memory
-            </Link>
-          </div>
-        </Card>
       </div>
     </div>
   );
+}
+
+// Sub-components
+function KPI({ icon, label, value, color, highlight = false, action }: any) {
+  return (
+    <Card className={`border-l-4 ${highlight ? 'border-l-orange-500 ring-2 ring-orange-100' : 'border-l-transparent'} transition-all hover:shadow-md h-full`}>
+      <div className="flex items-start justify-between h-full">
+        <div className="flex flex-col justify-between h-full">
+          <div>
+            <p className="text-sm font-medium text-slate-500">{label}</p>
+            <h3 className="text-2xl font-bold text-slate-900 mt-1">{value}</h3>
+          </div>
+          {action && (
+            <div className="mt-2 text-xs font-bold text-indigo-600 flex items-center gap-1">
+              {action} <ArrowRight className="w-3 h-3" />
+            </div>
+          )}
+        </div>
+        <div className={`p-3 rounded-xl ${color}`}>
+          {icon}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function parseReason(notes: string) {
+  try {
+    if (!notes) return "Auto-reorder based on forecast.";
+    const parsed = JSON.parse(notes);
+    return parsed.reason || notes;
+  } catch {
+    return notes;
+  }
 }
