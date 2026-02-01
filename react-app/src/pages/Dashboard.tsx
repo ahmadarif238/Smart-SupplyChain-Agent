@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Play, CheckCircle, AlertTriangle, DollarSign, Package, Clock, Activity, MessageSquare, ArrowRight } from 'lucide-react';
+import { Play, CheckCircle, AlertTriangle, DollarSign, Package, Clock, Activity, MessageSquare, ArrowRight, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { apiService } from '../api';
 import Card from '../components/ui/Card';

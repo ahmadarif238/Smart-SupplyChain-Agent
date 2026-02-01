@@ -1,6 +1,8 @@
+/// <reference types="vite/client" />
 import axios from 'axios';
 
-const API_BASE = 'http://127.0.0.1:8000';
+// Bypass the variable and point directly to Hugging Face
+const API_BASE = 'https://arifantarctic7-smart-supply-chain-agent.hf.space';
 
 const api = axios.create({
   baseURL: API_BASE,
