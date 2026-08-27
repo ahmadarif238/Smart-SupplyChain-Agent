@@ -1,12 +1,22 @@
 #!/usr/bin/env python
 """Test Phase 1.1 LangGraph migration - verify all nodes execute properly."""
 
+import os
 import time
 import json
+import uuid
 from datetime import datetime
+
+import pytest
+
 from app.agents.langgraph_workflow import run_cycle
 from app.agents.state import CycleState
 
+
+@pytest.mark.skipif(
+    not os.getenv("GROQ_API_KEY"),
+    reason="A full cycle calls the Groq API; skipped without GROQ_API_KEY.",
+)
 def test_cycle_execution():
     """Run a single cycle and verify state flow through all 7 nodes."""
     print("\n" + "="*60)
@@ -16,7 +26,7 @@ def test_cycle_execution():
     start_time = datetime.utcnow()
     
     # Run the cycle
-    result = run_cycle()
+    result = run_cycle(cycle_id=f"test-{uuid.uuid4()}")
     
     end_time = datetime.utcnow()
     duration = (end_time - start_time).total_seconds()
@@ -71,7 +81,7 @@ if __name__ == "__main__":
         print("\n[STABILITY TEST] Running 3 additional cycles...")
         for i in range(3):
             print(f"  Cycle {i+1}/3...", end='', flush=True)
-            result = run_cycle()
+            result = run_cycle(cycle_id=f"test-{uuid.uuid4()}")
             print(f" {result.get('status')}")
             time.sleep(1)
         

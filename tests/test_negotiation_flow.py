@@ -1,3 +1,17 @@
+import pytest
+
+# The negotiation feature this exercises no longer exists: neither
+# `negotiation_node_wrapper` nor `should_negotiate` is defined anywhere in
+# app/, and there is no negotiation node module -- only a leftover
+# `negotiation_rounds` key in the workflow state. The test therefore failed at
+# import with an ImportError on every CI run.
+#
+# Kept (rather than deleted) so the intended behaviour is still documented if
+# negotiation is reintroduced. Delete this file if it is not coming back.
+pytestmark = pytest.mark.skip(
+    reason="Negotiation was removed from the workflow; see comment above."
+)
+
 
 import logging
 import sys
