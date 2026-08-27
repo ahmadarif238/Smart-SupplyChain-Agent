@@ -15,6 +15,39 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Add Hugging Face Space configuration to README
+        run: |
+          set -e
+          # Hugging Face reads a Space's configuration from YAML frontmatter at
+          # the top of README.md. This repo's README is written for GitHub and
+          # has none, so once the sync below started succeeding it replaced the
+          # Space's own configured README and the Space failed to build with
+          # "Missing configuration in README".
+          #
+          # The frontmatter is injected here rather than committed to the repo
+          # so the GitHub README stays clean (GitHub renders frontmatter as an
+          # ugly table at the top of the page).
+          if head -1 README.md | grep -q '^---$'; then
+            echo "Frontmatter already present; leaving README untouched."
+            exit 0
+          fi
+          mv README.md README.github.md
+          {
+            printf -- '---\n'
+            printf 'title: Smart Supply Chain Agent\n'
+            printf 'emoji: "\U0001F916"\n'
+            printf 'colorFrom: purple\n'
+            printf 'colorTo: blue\n'
+            printf 'sdk: docker\n'
+            printf 'app_port: 7860\n'
+            printf 'pinned: false\n'
+            printf -- '---\n\n'
+            cat README.github.md
+          } > README.md
+          rm README.github.md
+          echo "Injected Space configuration:"
+          head -10 README.md
+
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -27,12 +60,12 @@ jobs:
           # pushing full history.
           #
           # Why: commit c1799e7 added a ~20MB .mp4 to this repo. Hugging Face
-          # rejects any non-LFS file over 10MB, so `git push` of the real
-          # history failed -- silently leaving the Space pinned to whatever
-          # was last deployed successfully (it had been failing since
-          # 2026-02). A Space only ever needs the current state, so publishing
-          # one flat commit sidesteps the oversized blob without rewriting
-          # this repository's history.
+          # rejects any non-LFS file over 10MB, so pushing the real history was
+          # refused outright -- silently leaving the Space pinned to whatever
+          # was last deployed successfully (it had been failing since 2026-02).
+          # A Space only ever needs the current state, so publishing one flat
+          # commit sidesteps the oversized blob without rewriting this
+          # repository's history.
           git checkout --orphan hf-deploy
           git add -A
           git commit -m "Deploy ${GITHUB_SHA::7} from ${GITHUB_REF_NAME}"
