@@ -164,7 +164,7 @@ def forecast_node(state: CycleState) -> CycleState:
                 for attempt in range(2):
                     try:
                         raw = query_groq(
-                            LLMConfig.FORECAST_MODEL,  # llama-3.3-70b-versatile
+                            LLMConfig.FORECAST_MODEL,  # gpt-oss-120b
                             prompt,
                             timeout=LLMConfig.FORECAST_TIMEOUT,
                             max_tokens=500

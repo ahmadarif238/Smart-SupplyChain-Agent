@@ -38,7 +38,7 @@ class DialogueGenerator:
     }
     
     def __init__(self, model: str = None):
-        self.model = model or LLMConfig.DIALOGUE_MODEL  # llama-3.1-8b-instant
+        self.model = model or LLMConfig.DIALOGUE_MODEL  # LLMConfig.DIALOGUE_MODEL (gpt-oss-20b)
     
     def generate_rejection(
         self, 
@@ -128,7 +128,7 @@ Generate a compelling 1-2 sentence counter-argument that emphasizes business imp
         # Use Groq LLM for negotiation
         try:
             response = query_groq(
-                model=LLMConfig.NEGOTIATION_MODEL,  # qwen-qwen-3-32b for reasoning
+                model=LLMConfig.NEGOTIATION_MODEL,  # gpt-oss-120b for reasoning
                 prompt=prompt,
                 max_tokens=150,
                 timeout=LLMConfig.NEGOTIATION_TIMEOUT

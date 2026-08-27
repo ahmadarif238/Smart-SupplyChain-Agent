@@ -25,15 +25,26 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("FastAPI startup complete")
     
-    # Create database tables if they don't exist
-    from app.models.database import engine, Base
+    # Create database tables if they don't exist. Every startup step below is
+    # guarded: a deployed portfolio demo must come up even when the database or
+    # an upstream API is unavailable.
+    from app.models.database import engine, Base, DATABASE_URL, USING_FALLBACK
     from app.models import schemas  # Import schemas to register models
-    Base.metadata.create_all(bind=engine)
-    logger.info("Database tables created")
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info(
+            f"Database tables ready ({DATABASE_URL.split('://')[0]}"
+            f"{', local fallback' if USING_FALLBACK else ''})"
+        )
+    except Exception as exc:
+        logger.error(f"Database init failed, continuing without it: {exc}")
 
     # Start the autonomous agent scheduler
-    start_agent_background_job()
-    logger.info("Autonomous agent scheduler started")
+    try:
+        start_agent_background_job()
+        logger.info("Autonomous agent scheduler started")
+    except Exception as exc:
+        logger.error(f"Agent scheduler could not start: {exc}")
     
     # Recovery: Reset interrupted jobs
     from app.models.database import SessionLocal
@@ -67,6 +78,9 @@ async def lifespan(app: FastAPI):
         
         if interrupted_jobs:
             logger.info(f"Reset {len(interrupted_jobs)} interrupted jobs to 'failed'")
+    except Exception as exc:
+        logger.error(f"Startup recovery/seed skipped: {exc}")
+        db.rollback()
     finally:
         db.close()
     

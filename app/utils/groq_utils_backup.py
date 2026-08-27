@@ -50,7 +50,7 @@ def query_groq(model: str, prompt: str, max_tokens: int = 2048, timeout: int = 3
     - Respects circuit breaker for quota protection
     
     Args:
-        model: Groq model name (e.g., "llama-3.1-8b-instant")
+        model: Groq model name (e.g., "openai/gpt-oss-20b")
         prompt: Prompt text
         max_tokens: Max tokens in response
         timeout: Per-request timeout in seconds
@@ -99,7 +99,11 @@ def query_groq(model: str, prompt: str, max_tokens: int = 2048, timeout: int = 3
                 model=model,
                 messages=[{"role": "user", "content": cleaned_prompt}],
                 max_tokens=max_tokens,
-                timeout=timeout
+                timeout=timeout,
+                # gpt-oss models reason before answering; without these the chain of
+                # thought lands in `content` and breaks every caller's parsing.
+                reasoning_format=LLMConfig.REASONING_FORMAT,
+                reasoning_effort=LLMConfig.REASONING_EFFORT
             )
             
             # ✅ Reset rate limit delay on success

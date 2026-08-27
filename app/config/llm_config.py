@@ -15,11 +15,20 @@ class LLMConfig:
     
     # Groq Model Selection (Free Tier - Production Models)
     # Source: https://console.groq.com/docs/models
-    FORECAST_MODEL = "llama-3.3-70b-versatile"  # Production: demand forecasting
-    SUMMARY_MODEL = "llama-3.3-70b-versatile"   # Production: cycle summaries
-    DIALOGUE_MODEL = "llama-3.1-8b-instant"     # Production: fast dialogue
-    NEGOTIATION_MODEL = "llama-3.3-70b-versatile"  # Production: negotiation reasoning
-    
+    # NOTE (2026-08): Groq decommissioned ALL Llama chat models
+    # (llama-3.1-8b-instant, llama-3.3-70b-versatile, llama3-*-8192).
+    # The current free production line-up is the openai/gpt-oss-* family.
+    # Model ids are env-overridable so a future rename needs no redeploy.
+    FORECAST_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")      # demand forecasting
+    SUMMARY_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")       # cycle summaries
+    DIALOGUE_MODEL = os.getenv("GROQ_FAST_MODEL", "openai/gpt-oss-20b")  # fast dialogue
+    NEGOTIATION_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")   # negotiation reasoning
+
+    # gpt-oss models are reasoning models: without these two params the chain of
+    # thought is streamed back inside `content` and breaks every downstream parser.
+    REASONING_FORMAT = "hidden"   # strip chain-of-thought from the response
+    REASONING_EFFORT = "low"      # keep latency/token use close to the old 8b/70b models
+
     # Timeout Configuration
     FORECAST_TIMEOUT = 30  # seconds
     SUMMARY_TIMEOUT = 45   # seconds  

@@ -66,7 +66,7 @@ class LLMService:
             """
             # Use Groq for summarization
             response = query_groq(
-                model=LLMConfig.SUMMARY_MODEL,  # llama-3.3-70b-versatile
+                model=LLMConfig.SUMMARY_MODEL,  # LLMConfig.SUMMARY_MODEL (gpt-oss-120b)
                 prompt=prompt,
                 max_tokens=800,
                 timeout=LLMConfig.SUMMARY_TIMEOUT
@@ -131,7 +131,7 @@ def call_gemini_api(model: str, messages: list, temperature: float = 0.7, max_to
     
     # Use Groq instead of Gemini
     response = query_groq(
-        model=LLMConfig.DIALOGUE_MODEL,  # llama-3.1-8b-instant
+        model=LLMConfig.DIALOGUE_MODEL,  # LLMConfig.DIALOGUE_MODEL (gpt-oss-20b)
         prompt=prompt,
         max_tokens=max_tokens,
         timeout=15

@@ -99,3 +99,6 @@ verify_*.py
 init_learning_data.py
 cleanup_old_feedback.py
 list_products.py
+
+# Local fallback datastore (created at runtime)
+supplychain.db

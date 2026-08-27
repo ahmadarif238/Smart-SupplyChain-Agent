@@ -60,7 +60,7 @@ class TokenManager:
         Check if we can make a request without exceeding rate limits.
         
         Args:
-            model: Model name (e.g., "llama-3.3-70b-versatile")
+            model: Model name (e.g., "openai/gpt-oss-120b")
             estimated_tokens: Estimated tokens for this request
             
         Returns:
