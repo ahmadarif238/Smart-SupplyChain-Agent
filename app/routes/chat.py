@@ -14,17 +14,19 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+
 class ChatRequest(BaseModel):
     message: str
+
 
 class ChatResponse(BaseModel):
     response: str
     status: str
 
+
 @router.post("/", response_model=ChatResponse)
 async def chat_with_analyst(
-    request: ChatRequest,
-    current_user = Depends(get_current_user)
+    request: ChatRequest, current_user=Depends(get_current_user)
 ):
     """
     Chat with the Supply Chain Analyst Agent.
@@ -33,12 +35,9 @@ async def chat_with_analyst(
     try:
         agent = get_analyst_agent()
         result = agent.ask(request.message)
-        
-        return ChatResponse(
-            response=result["response"],
-            status=result["status"]
-        )
-        
+
+        return ChatResponse(response=result["response"], status=result["status"])
+
     except Exception as e:
         logger.error(f"Chat endpoint error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))

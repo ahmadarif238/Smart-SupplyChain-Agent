@@ -1,6 +1,7 @@
 # app/utils/common.py
 from typing import Any, Dict, List
 
+
 def serialize_model(obj: Any):
     """
     Serialize SQLAlchemy model instance(s) to plain dict(s).

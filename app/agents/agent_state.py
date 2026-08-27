@@ -16,6 +16,7 @@ from datetime import datetime
 
 class SKUForecast(BaseModel):
     """Forecast result for a single SKU"""
+
     sku: str
     product_name: str
     current_quantity: int
@@ -29,6 +30,7 @@ class SKUForecast(BaseModel):
 
 class SKUDecision(BaseModel):
     """Decision result for a single SKU"""
+
     sku: str
     product_name: str
     reorder_required: bool
@@ -41,6 +43,7 @@ class SKUDecision(BaseModel):
 
 class SKUAction(BaseModel):
     """Action execution result for a single SKU"""
+
     sku: str
     product_name: str
     action_taken: bool
@@ -52,66 +55,67 @@ class SKUAction(BaseModel):
 class AgentState(BaseModel):
     """
     Complete state of the agent cycle.
-    
+
     This replaces passing dicts between nodes and makes the agent:
     - Type-safe
     - Self-documenting
     - Easier to persist
     - Compatible with LangGraph
     """
-    
+
     # Metadata
     cycle_id: str  # Unique ID for this cycle
     cycle_started_at: datetime
     cycle_stage: str  # "init" → "fetch" → "forecast" → "decision" → "action" → "learning" → "complete"
-    
+
     # Fetch Stage
     inventory_data: List[Dict[str, Any]] = []  # Raw inventory from DB
     sales_data: List[Dict[str, Any]] = []  # Raw sales from DB
     fetch_error: Optional[str] = None
-    
+
     # Forecast Stage
     forecasts: List[SKUForecast] = []  # Demand forecasts for each SKU
     forecast_error: Optional[str] = None
-    
+
     # Decision Stage
     decisions: List[SKUDecision] = []  # Reorder decisions
     decision_error: Optional[str] = None
-    
+
     # Action Stage
     actions: List[SKUAction] = []  # Executed actions
     action_error: Optional[str] = None
-    
+
     # Learning Stage
     learning_updates: Dict[str, Any] = {}  # Parameters adjusted by learning
     learning_error: Optional[str] = None
-    
+
     # Summary
     total_skus_processed: int = 0
     total_reorders_triggered: int = 0
     urgent_actions_pending: bool = False
-    
+
     class Config:
         """Allow datetime serialization"""
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
-    
+
+        json_encoders = {datetime: lambda v: v.isoformat()}
+
     @property
     def has_errors(self) -> bool:
         """Check if any stage had errors"""
-        return any([
-            self.fetch_error,
-            self.forecast_error,
-            self.decision_error,
-            self.action_error,
-            self.learning_error
-        ])
-    
+        return any(
+            [
+                self.fetch_error,
+                self.forecast_error,
+                self.decision_error,
+                self.action_error,
+                self.learning_error,
+            ]
+        )
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dict for logging/storage"""
         return self.dict()
-    
+
     def summary(self) -> Dict[str, Any]:
         """Get summary for user display"""
         return {
@@ -121,5 +125,5 @@ class AgentState(BaseModel):
             "skus_processed": self.total_skus_processed,
             "reorders_triggered": self.total_reorders_triggered,
             "urgent": self.urgent_actions_pending,
-            "errors": self.has_errors
+            "errors": self.has_errors,
         }

@@ -28,9 +28,15 @@ class LLMService:
                 "skus_processed": len(cycle_data.get("inventory_data", {})),
                 "forecasts": len(cycle_data.get("forecast_results", [])),
                 "decisions": len(cycle_data.get("decisions", [])),
-                "reorders": len([d for d in cycle_data.get("decisions", []) if d.get("decision") == "reorder"]),
+                "reorders": len(
+                    [
+                        d
+                        for d in cycle_data.get("decisions", [])
+                        if d.get("decision") == "reorder"
+                    ]
+                ),
                 "actions": len(cycle_data.get("actions", [])),
-                "errors": len(cycle_data.get("errors", []))
+                "errors": len(cycle_data.get("errors", [])),
             }
 
             # Extract top 3 decisions (narrative focus)
@@ -39,7 +45,9 @@ class LLMService:
                 {
                     "sku": d.get("sku"),
                     "decision": d.get("decision"),
-                    "reasoning": d.get("reasoning", "")[:100]  # Limit reasoning to 100 chars
+                    "reasoning": d.get("reasoning", "")[
+                        :100
+                    ],  # Limit reasoning to 100 chars
                 }
                 for d in top_decisions
             ]
@@ -47,11 +55,13 @@ class LLMService:
             # Extract actions summary
             actions_summary = []
             for a in cycle_data.get("actions", [])[:5]:  # Top 5 actions
-                actions_summary.append({
-                    "action_type": a.get("action_type"),
-                    "sku": a.get("sku"),
-                    "quantity": a.get("quantity")
-                })
+                actions_summary.append(
+                    {
+                        "action_type": a.get("action_type"),
+                        "sku": a.get("sku"),
+                        "quantity": a.get("quantity"),
+                    }
+                )
             lean_data["actions_summary"] = actions_summary
 
             prompt = f"""
@@ -69,9 +79,9 @@ class LLMService:
                 model=LLMConfig.SUMMARY_MODEL,  # LLMConfig.SUMMARY_MODEL (gpt-oss-120b)
                 prompt=prompt,
                 max_tokens=800,
-                timeout=LLMConfig.SUMMARY_TIMEOUT
+                timeout=LLMConfig.SUMMARY_TIMEOUT,
             )
-            
+
             if response:
                 return response.strip()
             else:
@@ -88,11 +98,13 @@ class LLMService:
         decisions = cycle_data.get("decisions", [])
         reorders = [d for d in decisions if d.get("decision") == "reorder"]
         actions = cycle_data.get("actions", [])
-        
+
         summary = f"SUPPLY CHAIN CYCLE SUMMARY\n\n"
-        summary += f"Processed {skus} SKUs and generated {forecasts} demand forecasts.\n\n"
+        summary += (
+            f"Processed {skus} SKUs and generated {forecasts} demand forecasts.\n\n"
+        )
         summary += f"DECISIONS\nTriggered {len(reorders)} reorder decisions out of {len(decisions)} total decisions.\n\n"
-        
+
         if actions:
             summary += f"ACTIONS TAKEN\n"
             total_val = sum(a.get("total_cost", 0) for a in actions)
@@ -101,46 +113,52 @@ class LLMService:
                 qty = a.get("quantity")
                 oid = a.get("order_id")
                 summary += f"• Created Order #{oid} for {sku} ({qty} units)\n"
-            
-            summary += f"\nFINANCIAL IMPACT\nTotal spend for this cycle was ${total_val:,.2f}."
-        
+
+            summary += (
+                f"\nFINANCIAL IMPACT\nTotal spend for this cycle was ${total_val:,.2f}."
+            )
+
         return summary
 
 
-def call_gemini_api(model: str, messages: list, temperature: float = 0.7, max_tokens: int = 150) -> str:
+def call_gemini_api(
+    model: str, messages: list, temperature: float = 0.7, max_tokens: int = 150
+) -> str:
     """
     DEPRECATED: Replaced with Groq.
     This function now uses Groq instead of Gemini for backwards compatibility.
-    
+
     Helper function to call Groq API for dialogue generation.
-    
+
     Args:
         model: Model name (ignored, uses Groq model)
         messages: List of message dicts with 'role' and 'content'
         temperature: Sampling temperature
         max_tokens: Maximum completion tokens
-        
+
     Returns:
         Generated text response
     """
     from app.utils.groq_utils import query_groq
     from app.config.llm_config import LLMConfig
-    
+
     # Combine messages into a single prompt
     prompt = "\n".join([msg["content"] for msg in messages])
-    
+
     # Use Groq instead of Gemini
     response = query_groq(
         model=LLMConfig.DIALOGUE_MODEL,  # LLMConfig.DIALOGUE_MODEL (gpt-oss-20b)
         prompt=prompt,
         max_tokens=max_tokens,
-        timeout=15
+        timeout=15,
     )
-    
+
     return response if response else ""
 
 
-def query_gemini(model: str, prompt: str, timeout: int = 30, max_tokens: int = 400) -> str:
+def query_gemini(
+    model: str, prompt: str, timeout: int = 30, max_tokens: int = 400
+) -> str:
     """
     DEPRECATED: Replaced with Groq.
     Compatibility wrapper for legacy calls (like in NegotiationNode).
@@ -149,7 +167,7 @@ def query_gemini(model: str, prompt: str, timeout: int = 30, max_tokens: int = 4
     return call_gemini_api(
         model=model,
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=max_tokens
+        max_tokens=max_tokens,
     )
 
 

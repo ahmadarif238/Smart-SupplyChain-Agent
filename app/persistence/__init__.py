@@ -10,7 +10,7 @@ from app.persistence.memory_types import (
     SemanticMemory,
     ProceduralMemory,
     Checkpoint,
-    Goal
+    Goal,
 )
 from app.persistence.persistent_memory import PersistentMemoryManager
 from app.persistence.recovery_manager import RecoveryManager
@@ -23,5 +23,5 @@ __all__ = [
     "Checkpoint",
     "Goal",
     "PersistentMemoryManager",
-    "RecoveryManager"
+    "RecoveryManager",
 ]

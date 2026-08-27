@@ -1,4 +1,5 @@
 """Auth utilities for routes - DEMO MODE: Authentication disabled for public access"""
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -21,15 +22,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     """
     # DEMO MODE: Return a dummy user for public access
     if DEMO_MODE:
+
         class DemoUser:
             id = 1
             username = "demo_user"
             email = "demo@example.com"
+
         return DemoUser()
-    
+
     from app.models.database import SessionLocal
     from app.models.schemas import User
-    
+
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -43,7 +46,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise credential_exception
-        
+
     db = SessionLocal()
     try:
         user = db.query(User).filter(User.username == token_data.username).first()
@@ -52,4 +55,3 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         return user
     finally:
         db.close()
-

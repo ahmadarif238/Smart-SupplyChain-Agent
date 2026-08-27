@@ -20,12 +20,17 @@ from app.agents.nodes.finance_node import FinanceNode
 from app.config.settings import settings
 
 # Import Decision Subgraph Nodes
-from app.agents.nodes.decision_subgraph import analyze_trends_node, check_constraints_node, optimize_cost_node
+from app.agents.nodes.decision_subgraph import (
+    analyze_trends_node,
+    check_constraints_node,
+    optimize_cost_node,
+)
 
 logger = logging.getLogger("langgraph_workflow")
 
 import os
 import json
+
 
 def _load_dynamic_budget():
     try:
@@ -38,10 +43,12 @@ def _load_dynamic_budget():
         logger.error(f"Failed to load dynamic settings: {e}")
     return settings.DEFAULT_BUDGET
 
+
 # Initialize node implementations
 _finance_node_impl = FinanceNode()
 _action_node_impl = ActionNode(session_factory=SessionLocal)
 _memory_node_impl = MemoryNode()
+
 
 # Helper to convert dict states to CycleState for node processing
 def ensure_state(state) -> CycleState:
@@ -50,76 +57,128 @@ def ensure_state(state) -> CycleState:
         return CycleState(**state)
     return state
 
+
 def state_to_dict(state: CycleState) -> dict:
     """Convert CycleState to dict for LangGraph."""
     return state.__dict__
 
+
 def fetch_node_wrapper(state) -> dict:
     """Wrapper for fetch_data_node."""
     cycle_state = ensure_state(state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", "🔄 Syncing with ERP system...", stage="FETCH")
+    job_stream_manager.log_event(
+        cycle_state.cycle_id, "progress", "🔄 Syncing with ERP system...", stage="FETCH"
+    )
     result = fetch_data_node(cycle_state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", f"✅ Data synced. {len(result.inventory_data)} SKUs loaded.", stage="FETCH")
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        f"✅ Data synced. {len(result.inventory_data)} SKUs loaded.",
+        stage="FETCH",
+    )
     return state_to_dict(result)
 
 
 def forecast_node_wrapper(state) -> dict:
     """Wrapper for forecast_node."""
     cycle_state = ensure_state(state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", "🧠 Analyzing market trends...", stage="FORECAST")
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        "🧠 Analyzing market trends...",
+        stage="FORECAST",
+    )
     result = forecast_node(cycle_state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", f"✅ Forecasts updated for {len(result.forecast_results)} items.", stage="FORECAST")
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        f"✅ Forecasts updated for {len(result.forecast_results)} items.",
+        stage="FORECAST",
+    )
     return state_to_dict(result)
+
 
 def analyze_trends_wrapper(state) -> dict:
     cycle_state = ensure_state(state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", "📊 Subgraph: Analyzing trends...", stage="DECISION")
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        "📊 Subgraph: Analyzing trends...",
+        stage="DECISION",
+    )
     result = analyze_trends_node(cycle_state)
     return state_to_dict(result)
 
+
 def check_constraints_wrapper(state) -> dict:
     cycle_state = ensure_state(state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", "🚧 Subgraph: Checking constraints...", stage="DECISION")
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        "🚧 Subgraph: Checking constraints...",
+        stage="DECISION",
+    )
     result = check_constraints_node(cycle_state)
     return state_to_dict(result)
 
+
 def optimize_cost_wrapper(state) -> dict:
     cycle_state = ensure_state(state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", "💎 Subgraph: Optimizing cost...", stage="DECISION")
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        "💎 Subgraph: Optimizing cost...",
+        stage="DECISION",
+    )
     result = optimize_cost_node(cycle_state)
-    
+
     # Emit summary of decisions
-    reorders = [d for d in result.decisions if d.get('reorder_required')]
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", f"Decisions complete. {len(reorders)} reorders identified.", stage="DECISION")
-    
+    reorders = [d for d in result.decisions if d.get("reorder_required")]
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        f"Decisions complete. {len(reorders)} reorders identified.",
+        stage="DECISION",
+    )
+
     return state_to_dict(result)
 
 
 def finance_node_wrapper(state) -> dict:
     """Wrapper for finance_node."""
     cycle_state = ensure_state(state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", "💰 Finance Agent reviewing budget...", stage="FINANCE")
-    
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        "💰 Finance Agent reviewing budget...",
+        stage="FINANCE",
+    )
+
     # Simple strict budget check
     result = _finance_node_impl.review_orders(cycle_state)
-    
+
     # Log feedback
     job_stream_manager.log_event(
         cycle_state.cycle_id,
         "finance_feedback",
         f"💰 {result['finance_feedback']}",
         details={"budget_remaining": result.get("budget_remaining")},
-        stage="FINANCE"
+        stage="FINANCE",
     )
-    
+
     return state_to_dict(cycle_state)
 
 
 def action_node_wrapper(state) -> dict:
     """Wrapper for action_node."""
     cycle_state = ensure_state(state)
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", "🛒 Preparing Purchase Orders...", stage="ACTION")
-    
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        "🛒 Preparing Purchase Orders...",
+        stage="ACTION",
+    )
+
     # Execute each decision (Simulate placing order)
     executed_actions = []
     for decision in cycle_state.decisions:
@@ -133,38 +192,42 @@ def action_node_wrapper(state) -> dict:
                     "action_item",
                     f"✅ Order Placed: {action_result['sku']} - {action_result['quantity']} units",
                     details=action_result,
-                    stage="ACTION"
+                    stage="ACTION",
                 )
-    
+
     # Update state with executed actions
     cycle_state.actions = executed_actions
-    
-    job_stream_manager.log_event(cycle_state.cycle_id, "progress", f"✅ Cycle Complete. {len(executed_actions)} orders processed.", stage="ACTION")
+
+    job_stream_manager.log_event(
+        cycle_state.cycle_id,
+        "progress",
+        f"✅ Cycle Complete. {len(executed_actions)} orders processed.",
+        stage="ACTION",
+    )
     return state_to_dict(cycle_state)
 
 
 def memory_node_wrapper(state) -> dict:
     """Wrapper for memory_node."""
     cycle_state = ensure_state(state)
-    
+
     # Build summary from state
-    summary = {
-        "run_at": cycle_state.started_at.isoformat(),
-        "summary": []
-    }
-    
+    summary = {"run_at": cycle_state.started_at.isoformat(), "summary": []}
+
     # Add decisions to summary
     for decision in cycle_state.decisions:
         if decision.get("reorder_required"):
-            summary["summary"].append({
-                "sku": decision.get("sku"),
-                "product_name": decision.get("product_name"),
-                "decision": decision
-            })
-    
+            summary["summary"].append(
+                {
+                    "sku": decision.get("sku"),
+                    "product_name": decision.get("product_name"),
+                    "decision": decision,
+                }
+            )
+
     # Save to memory
     _memory_node_impl.append_run_summary(SessionLocal, summary)
-    
+
     return state_to_dict(cycle_state)
 
 
@@ -191,12 +254,13 @@ workflow.add_edge("forecast", "analyze_trends")
 workflow.add_edge("analyze_trends", "check_constraints")
 workflow.add_edge("check_constraints", "optimize_cost")
 workflow.add_edge("optimize_cost", "finance")
-workflow.add_edge("finance", "action") # Straight to action (Drafting)
+workflow.add_edge("finance", "action")  # Straight to action (Drafting)
 workflow.add_edge("action", "memory")
 workflow.add_edge("memory", END)
 
 # Compile
 app = workflow.compile()
+
 
 def run_cycle(cycle_id: str, recent_revenue: float = 0.0):
     """Run the LangGraph workflow."""
@@ -228,12 +292,12 @@ def run_cycle(cycle_id: str, recent_revenue: float = 0.0):
         "finance_feedback": "",
         "finance_rejections": [],
         "negotiation_rounds": 0,
-        "budget_remaining": 0.0
+        "budget_remaining": 0.0,
     }
-    
+
     try:
         result_state = app.invoke(initial_state)
-        
+
         # Result is already a dict
         result_dict = {
             "cycle_id": cycle_id,
@@ -242,11 +306,13 @@ def run_cycle(cycle_id: str, recent_revenue: float = 0.0):
             "forecast_results": result_state.get("forecast_results", []),
             "status": "completed",
             "skus_processed": len(result_state.get("inventory_data", [])),
-            "errors": result_state.get("errors", [])
+            "errors": result_state.get("errors", []),
         }
-        
+
         return result_dict
     except Exception as e:
         logger.error(f"Workflow failed: {e}", exc_info=True)
-        job_stream_manager.log_event(cycle_id, "error", f"Workflow failed: {str(e)}", stage="ERROR")
+        job_stream_manager.log_event(
+            cycle_id, "error", f"Workflow failed: {str(e)}", stage="ERROR"
+        )
         raise e

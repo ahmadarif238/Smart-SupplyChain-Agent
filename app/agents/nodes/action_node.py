@@ -13,10 +13,10 @@ logger = logging.getLogger("action_node")
 class ActionNode:
     """
     Action node executes decisions by creating orders and alerts.
-    
+
     Uses new decision data structure with urgency levels and cost analysis.
     """
-    
+
     def __init__(self, session_factory=SessionLocal):
         self.session_factory = session_factory
 
@@ -28,14 +28,14 @@ class ActionNode:
             "medium": 3,
             "low": 4,
             "deferred": 5,
-            "obsolete": 5
+            "obsolete": 5,
         }
         return urgency_priority.get(urgency_level, 3)
 
     def execute(self, decision: dict) -> dict:
         """
         Execute decision: create order and alert if reorder required.
-        
+
         Args:
             decision: Dict from intelligent decision node with:
               - reorder_required (bool)
@@ -46,7 +46,7 @@ class ActionNode:
               - cost_analysis (dict)
               - sku (str)
               - product_name (str)
-        
+
         Returns:
             Dict with execution results
         """
@@ -56,7 +56,7 @@ class ActionNode:
                 return {
                     "executed": False,
                     "message": "No reorder required",
-                    "urgency": decision.get("urgency_level", "low")
+                    "urgency": decision.get("urgency_level", "low"),
                 }
 
             sku = decision.get("sku", "UNKNOWN")
@@ -65,16 +65,24 @@ class ActionNode:
             reason = decision.get("reason", "Automatic reorder")
 
             # Fetch product details
-            product = db.query(schemas.Inventory).filter(schemas.Inventory.sku == sku).first()
+            product = (
+                db.query(schemas.Inventory).filter(schemas.Inventory.sku == sku).first()
+            )
             product_name = product.product_name if product else sku
-            supplier = product.supplier if product and hasattr(product, "supplier") else "Default"
+            supplier = (
+                product.supplier
+                if product and hasattr(product, "supplier")
+                else "Default"
+            )
 
             # Check for approval requirement - Default to True for human-in-the-loop
-            requires_approval = decision.get("requires_approval", True)  # Changed: Now defaults to True
+            requires_approval = decision.get(
+                "requires_approval", True
+            )  # Changed: Now defaults to True
             approval_reason = decision.get("approval_reason", "Agent-drafted order")
-            
+
             status = "Needs Approval" if requires_approval else "Pending"
-            
+
             # Prepare detailed alert message with decision metrics
             details = decision.get("details", {})
             cost_analysis = decision.get("cost_analysis", {})
@@ -86,7 +94,7 @@ class ActionNode:
                 f"Urgency: {urgency.upper()}",
                 f"Reason: {reason[:100]}",  # Truncate reason
             ]
-            
+
             if requires_approval:
                 alert_parts.insert(0, f"⚠️ APPROVAL NEEDED: {approval_reason}")
 
@@ -95,7 +103,9 @@ class ActionNode:
                 if "lead_time_days" in details:
                     alert_parts.append(f"Lead Time: {details['lead_time_days']}d")
                 if "reorder_point" in details:
-                    alert_parts.append(f"ROP: {details['reorder_point']} | Stock: {details.get('current_stock', '?')}")
+                    alert_parts.append(
+                        f"ROP: {details['reorder_point']} | Stock: {details.get('current_stock', '?')}"
+                    )
                 if "daily_avg_demand" in details:
                     alert_parts.append(f"Avg Demand: {details['daily_avg_demand']}/day")
 
@@ -109,22 +119,26 @@ class ActionNode:
 
             # Create order record with urgency priority
             priority = self._get_priority_from_urgency(urgency)
-            
+
             order = schemas.Orders(
                 sku=sku,
                 quantity=qty,
                 order_date=datetime.utcnow(),
                 status=status,
                 # Store decision details for audit trail
-                notes=json.dumps({
-                    "urgency": urgency,
-                    "reason": reason,
-                    "requires_approval": requires_approval,
-                    "approval_reason": approval_reason,
-                    "details": {k: str(v) for k, v in details.items()},
-                    "cost_analysis": {k: float(v) if isinstance(v, (int, float)) else str(v) 
-                                     for k, v in cost_analysis.items()}
-                })
+                notes=json.dumps(
+                    {
+                        "urgency": urgency,
+                        "reason": reason,
+                        "requires_approval": requires_approval,
+                        "approval_reason": approval_reason,
+                        "details": {k: str(v) for k, v in details.items()},
+                        "cost_analysis": {
+                            k: float(v) if isinstance(v, (int, float)) else str(v)
+                            for k, v in cost_analysis.items()
+                        },
+                    }
+                ),
             )
             db.add(order)
 
@@ -134,7 +148,7 @@ class ActionNode:
                 type="AutoOrder",
                 sku=sku,
                 # Store structured data
-                priority=priority
+                priority=priority,
             )
             db.add(alert)
 
@@ -165,7 +179,7 @@ class ActionNode:
                 "alert": alert_msg,
                 "supplier": supplier,
                 "cost_per_unit": unit_price,
-                "total_cost": total_cost
+                "total_cost": total_cost,
             }
 
         except Exception as e:
@@ -173,7 +187,7 @@ class ActionNode:
             return {
                 "executed": False,
                 "error": str(e),
-                "sku": decision.get("sku", "UNKNOWN")
+                "sku": decision.get("sku", "UNKNOWN"),
             }
         finally:
             db.close()

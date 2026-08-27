@@ -17,6 +17,7 @@ from app.config.llm_config import LLMConfig
 # Import Groq client if installed; fallback to requests or raise informative error.
 try:
     from groq import Groq
+
     GROQ_CLIENT = Groq(api_key=os.getenv("GROQ_API_KEY"))
 except Exception:
     GROQ_CLIENT = None
@@ -24,6 +25,7 @@ except Exception:
 # ✅ Rate-limit tracking (prevent cascading failures)
 _last_groq_call_time = 0
 _rate_limit_delay = 0  # Dynamic delay based on 429 responses
+
 
 def clean_llm_response(text: str) -> str:
     """
@@ -37,50 +39,61 @@ def clean_llm_response(text: str) -> str:
     text = re.sub(r"^\s*Assistant:", "", text, flags=re.IGNORECASE)
     return text.strip()
 
-def query_groq(model: str, prompt: str, max_tokens: int = 2048, timeout: int = 30, max_retries: int = 3) -> str:
+
+def query_groq(
+    model: str,
+    prompt: str,
+    max_tokens: int = 2048,
+    timeout: int = 30,
+    max_retries: int = 3,
+) -> str:
     """
     Query Groq chat completion with token management and automatic retry logic.
-    
-    ✅ ENHANCED: 
+
+    ✅ ENHANCED:
     - Token tracking and quota management
     - Pre-flight quota checks to prevent 429 errors
     - Exponential backoff for rate limit errors
     - Records actual token usage from API responses
     - Respects circuit breaker for quota protection
-    
+
     Args:
         model: Groq model name (e.g., "openai/gpt-oss-20b")
         prompt: Prompt text
         max_tokens: Max tokens in response
         timeout: Per-request timeout in seconds
         max_retries: Max number of retry attempts for rate limits
-    
+
     Returns:
         Cleaned LLM response string, or None if quota exceeded/rate limited
-        
+
     Raises:
         RuntimeError if Groq client not configured or critical error
     """
     global _last_groq_call_time, _rate_limit_delay
-    
+
     if GROQ_CLIENT is None:
-        raise RuntimeError("groq client not installed or GROQ_API_KEY is not configured.")
-    
+        raise RuntimeError(
+            "groq client not installed or GROQ_API_KEY is not configured."
+        )
+
     cleaned_prompt = prompt
     retry_count = 0
     base_delay = 1  # Start with 1 second base delay
-    
+
     while retry_count <= max_retries:
         try:
             # ✅ Throttle requests to avoid rate limits
             elapsed = time.time() - _last_groq_call_time
             if _rate_limit_delay > 0 and elapsed < _rate_limit_delay:
                 wait_time = _rate_limit_delay - elapsed
-                logger.info(f"Rate limit throttle: waiting {wait_time:.1f}s before next Groq call")
+                logger.info(
+                    f"Rate limit throttle: waiting {wait_time:.1f}s before next Groq call"
+                )
                 time.sleep(wait_time)
-            
+
             _last_groq_call_time = time.time()
-            
+
             resp = GROQ_CLIENT.chat.completions.create(
                 model=model,
                 messages=[{"role": "user", "content": cleaned_prompt}],
@@ -89,32 +102,34 @@ def query_groq(model: str, prompt: str, max_tokens: int = 2048, timeout: int = 3
                 # gpt-oss models reason before answering; without these the chain of
                 # thought lands in `content` and breaks every caller's parsing.
                 reasoning_format=LLMConfig.REASONING_FORMAT,
-                reasoning_effort=LLMConfig.REASONING_EFFORT
+                reasoning_effort=LLMConfig.REASONING_EFFORT,
             )
-            
+
             # ✅ Reset rate limit delay on success
             _rate_limit_delay = 0
-            
+
             # Try to extract content in standard shape
             try:
                 content = resp.choices[0].message.content
             except Exception:
                 content = str(resp)
             return clean_llm_response(content)
-            
+
         except Exception as e:
             error_str = str(e)
-            
+
             # ✅ Check if it's a rate limit error (429)
             if "429" in error_str or "rate_limit" in error_str.lower():
                 # Extract retry-after delay if available
                 retry_after = extract_retry_after(error_str)
-                
+
                 if retry_count < max_retries:
                     # Exponential backoff: 2s, 4s, 8s
-                    wait_time = retry_after if retry_after else (base_delay * (2 ** retry_count))
+                    wait_time = (
+                        retry_after if retry_after else (base_delay * (2**retry_count))
+                    )
                     _rate_limit_delay = wait_time
-                    
+
                     retry_count += 1
                     logger.warning(
                         f"Rate limit (429) on {model}. Retry {retry_count}/{max_retries} "
@@ -132,12 +147,15 @@ def query_groq(model: str, prompt: str, max_tokens: int = 2048, timeout: int = 3
                     return None
             else:
                 # Non-rate-limit error (timeout, API error, etc.)
-                logger.warning(f"Groq query failed (attempt {retry_count + 1}): {error_str[:100]}")
+                logger.warning(
+                    f"Groq query failed (attempt {retry_count + 1}): {error_str[:100]}"
+                )
                 if retry_count < max_retries:
                     retry_count += 1
-                    time.sleep(base_delay * (2 ** retry_count))
+                    time.sleep(base_delay * (2**retry_count))
                     continue
                 raise
+
 
 def extract_retry_after(error_str: str) -> Optional[float]:
     """
@@ -145,12 +163,13 @@ def extract_retry_after(error_str: str) -> Optional[float]:
     E.g., 'Please try again in 4.4s.' -> 4.4
     """
     try:
-        match = re.search(r'try again in ([\d.]+)s', error_str)
+        match = re.search(r"try again in ([\d.]+)s", error_str)
         if match:
             return float(match.group(1)) + 1.0  # Add 1s buffer
     except Exception:
         pass
     return None
+
 
 def try_parse_json_from_text(text: str):
     """
@@ -167,6 +186,7 @@ def try_parse_json_from_text(text: str):
         pass
     # find first JSON object/array block
     import re
+
     m = re.search(r"(\{(?:.|\s)*\}|\[(?:.|\s)*\])", text)
     if m:
         blob = m.group(0)

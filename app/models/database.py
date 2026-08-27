@@ -35,7 +35,9 @@ def _normalise(url: str) -> str:
         url = url.replace("postgres://", "postgresql://", 1)
     # `user:[YOUR-PASSWORD]@host` and raw #/&/@ in a password both make the URL
     # unparseable. Strip the placeholder brackets and percent-encode.
-    m = re.match(r"^(?P<scheme>[a-z+]+://)(?P<user>[^:/@]+):(?P<pw>.*)@(?P<rest>[^@]+)$", url)
+    m = re.match(
+        r"^(?P<scheme>[a-z+]+://)(?P<user>[^:/@]+):(?P<pw>.*)@(?P<rest>[^@]+)$", url
+    )
     if m:
         pw = m.group("pw")
         if pw.startswith("[") and pw.endswith("]"):
@@ -80,8 +82,10 @@ else:
         with _make_engine(DATABASE_URL).connect():
             pass
     except Exception as exc:  # noqa: BLE001 - any failure means "fall back"
-        print(f"WARNING: DATABASE_URL unreachable ({type(exc).__name__}: {exc}). "
-              f"Falling back to local SQLite so the app can still start.")
+        print(
+            f"WARNING: DATABASE_URL unreachable ({type(exc).__name__}: {exc}). "
+            f"Falling back to local SQLite so the app can still start."
+        )
         DATABASE_URL, USING_FALLBACK = _sqlite_fallback(), True
 
 engine = _make_engine(DATABASE_URL)
