@@ -34,7 +34,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend application
 COPY app/ ./app/
 COPY main.py .
-COPY init_adaptive_learning_db.py .
 
 # Copy built frontend from previous stage
 COPY --from=frontend-build /app/frontend/dist ./react-app/dist
