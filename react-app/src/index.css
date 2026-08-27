@@ -2,21 +2,130 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Control-tower theme.
+ *
+ * Near-black surfaces, a single high-visibility orange accent, sharp corners
+ * (no border radius) and condensed uppercase headings. Colours live here as
+ * CSS variables and in tailwind.config.js as the `ink` / `accent` scales, so a
+ * palette change is a two-file edit rather than a sweep through every screen.
+ */
+
+:root {
+  --ink-950: #0a0e14; /* page background */
+  --ink-900: #12171f; /* recessed panels, table stripes */
+  --ink-800: #1a1f26; /* cards and raised surfaces */
+  --ink-700: #262c38; /* hairlines and dividers */
+  --accent: #ff6a00;
+  --accent-hover: #ff8533;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
+  background-color: var(--ink-950);
+  color: #f1f5f9;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+.font-heading {
+  font-family: 'Rajdhani', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+
+/* Figures read better tabular: aligns digits in tables and metric tiles. */
+.font-mono,
+code,
+pre {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Small uppercase eyebrow label that precedes section headings. */
+.eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Faint precision grid, used behind hero and empty states. */
+.grid-bg {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.dot-bg {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Control-tower scrollbars. */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ink-950);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ink-700);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Radar ping used by live/active status indicators. */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+.radar-ping {
+  animation: pulse-ring 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* Recharts renders its own SVG text, which does not inherit the body colour. */
+.recharts-cartesian-axis-tick text,
+.recharts-legend-item-text {
+  fill: #94a3b8 !important;
+  color: #94a3b8 !important;
+  font-size: 11px;
+}
+
+.recharts-cartesian-grid line {
+  stroke: rgba(255, 255, 255, 0.06);
 }

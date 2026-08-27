@@ -55,17 +55,17 @@ export default function Orders() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-amber-500/15 text-amber-300';
       case 'confirmed':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-accent/10 text-accent';
       case 'shipped':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-accent/10 text-accent';
       case 'delivered':
-        return 'bg-green-100 text-green-800';
+        return 'bg-emerald-500/15 text-emerald-300';
       case 'cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-500/15 text-red-300';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-ink-900 text-white';
     }
   };
 
@@ -86,27 +86,27 @@ export default function Orders() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <p className="text-gray-600">Loading orders...</p>
+      <div className="min-h-screen bg-gradient-to-br from-ink-900 to-ink-800 flex items-center justify-center">
+        <p className="text-slate-400">Loading orders...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-ink-900 to-ink-800 p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-2">
-              <ShoppingCart className="w-8 h-8 text-blue-600" />
+            <h1 className="text-4xl font-bold text-white flex items-center gap-2">
+              <ShoppingCart className="w-8 h-8 text-accent" />
               Orders Management
             </h1>
-            <p className="text-gray-600 mt-2">Create and manage purchase orders</p>
+            <p className="text-slate-400 mt-2">Create and manage purchase orders</p>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition"
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-accent-hover text-white rounded-none hover:shadow-lg transition"
           >
             <Plus className="w-5 h-5" />
             New Order
@@ -115,40 +115,40 @@ export default function Orders() {
 
         {/* Create Order Form */}
         {showForm && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8 border-l-4 border-blue-600">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Create New Order</h2>
+          <div className="bg-ink-800 rounded-none shadow-lg p-6 mb-8 border-l-4 border-accent">
+            <h2 className="text-2xl font-bold text-white mb-4">Create New Order</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">SKU</label>
+                <label className="block text-sm font-semibold text-slate-300 mb-2">SKU</label>
                 <input
                   type="text"
                   value={newOrder.sku}
                   onChange={(e) => setNewOrder({ ...newOrder, sku: e.target.value })}
                   placeholder="Enter SKU"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-4 py-2 border border-ink-700 rounded-none focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Quantity</label>
+                <label className="block text-sm font-semibold text-slate-300 mb-2">Quantity</label>
                 <input
                   type="number"
                   value={newOrder.quantity}
                   onChange={(e) => setNewOrder({ ...newOrder, quantity: parseInt(e.target.value) })}
                   placeholder="Enter quantity"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-4 py-2 border border-ink-700 rounded-none focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
               <div className="flex items-end gap-2">
                 <button
                   onClick={handleCreateOrder}
                   disabled={creating}
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:shadow-lg transition disabled:bg-gray-400"
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-none hover:shadow-lg transition disabled:bg-ink-700"
                 >
                   {creating ? 'Creating...' : 'Create Order'}
                 </button>
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                  className="px-4 py-2 bg-ink-700 text-slate-300 rounded-none hover:bg-ink-700 transition"
                 >
                   Cancel
                 </button>
@@ -160,16 +160,16 @@ export default function Orders() {
         {/* Recommendations Section */}
         {recommendations.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">🎯 AI Recommendations</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">🎯 AI Recommendations</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {recommendations.map((rec: any, idx: number) => (
-                <div key={idx} className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-300">
+                <div key={idx} className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-none p-6 border border-accent/40">
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{rec.sku}</h3>
-                      <p className="text-sm text-gray-600">{rec.product_name}</p>
+                      <h3 className="text-lg font-semibold text-white">{rec.sku}</h3>
+                      <p className="text-sm text-slate-400">{rec.product_name}</p>
                     </div>
-                    <span className="px-3 py-1 bg-purple-600 text-white rounded-full text-sm font-semibold">
+                    <span className="px-3 py-1 bg-accent text-white rounded-full text-sm font-semibold">
                       {rec.urgency_level}
                     </span>
                   </div>
@@ -177,7 +177,7 @@ export default function Orders() {
                     <p><strong>Recommended Qty:</strong> {rec.order_quantity}</p>
                     <p><strong>Current Stock:</strong> {rec.current_stock}</p>
                     <p><strong>Forecast:</strong> {rec.forecast_units} units</p>
-                    <p className="text-gray-700 mt-3">{rec.reasoning}</p>
+                    <p className="text-slate-300 mt-3">{rec.reasoning}</p>
                   </div>
                 </div>
               ))}
@@ -186,13 +186,13 @@ export default function Orders() {
         )}
 
         {/* Orders List */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Orders ({orders.length})</h2>
+        <div className="bg-ink-800 rounded-none shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-white mb-4">Recent Orders ({orders.length})</h2>
           
           {orders.length === 0 ? (
             <div className="text-center py-12">
-              <ShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">No orders yet</p>
+              <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-400 text-lg">No orders yet</p>
             </div>
           ) : (
             <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -205,24 +205,24 @@ export default function Orders() {
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
+                    className="flex items-center justify-between p-4 border border-ink-700 rounded-none hover:bg-ink-900 transition"
                   >
                     <div className="flex items-center gap-4 flex-1">
-                      <StatusIcon className="w-5 h-5 text-blue-600" />
+                      <StatusIcon className="w-5 h-5 text-accent" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <p className="font-semibold text-gray-900">{productName}</p>
-                          <span className="text-sm text-gray-600">×{order.quantity}</span>
+                          <p className="font-semibold text-white">{productName}</p>
+                          <span className="text-sm text-slate-400">×{order.quantity}</span>
                         </div>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-slate-400">
                           {formattedDate}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
-                        <p className="font-semibold text-gray-900">${order.total_price || 'N/A'}</p>
-                        <p className="text-xs text-gray-500">{order.supplier || 'Pending'}</p>
+                        <p className="font-semibold text-white">${order.total_price || 'N/A'}</p>
+                        <p className="text-xs text-slate-400">{order.supplier || 'Pending'}</p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
                         {order.status}

@@ -81,7 +81,7 @@ const ChatBot: React.FC = () => {
         <>
             {/* Floating Button */}
             <motion.button
-                className="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 z-50 flex items-center justify-center"
+                className="fixed bottom-6 right-6 bg-accent text-white p-4 rounded-full shadow-lg hover:bg-accent-hover z-50 flex items-center justify-center"
                 onClick={() => setIsOpen(true)}
                 initial={{ scale: 0 }}
                 animate={{ scale: isOpen ? 0 : 1 }}
@@ -97,17 +97,17 @@ const ChatBot: React.FC = () => {
                         initial={{ opacity: 0, y: 100, scale: 0.8 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 100, scale: 0.8 }}
-                        className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden border border-gray-200"
+                        className="fixed bottom-6 right-6 w-96 h-[500px] bg-ink-800 rounded-none shadow-2xl flex flex-col z-50 overflow-hidden border border-ink-700"
                     >
                         {/* Header */}
-                        <div className="bg-blue-600 p-4 text-white flex justify-between items-center shadow-md">
+                        <div className="bg-accent p-4 text-white flex justify-between items-center shadow-md">
                             <div className="flex items-center space-x-2">
                                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                                 <h3 className="font-bold">Analyst Assistant</h3>
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="hover:bg-blue-700 p-1 rounded transition-colors"
+                                className="hover:bg-accent-hover p-1 rounded transition-colors"
                                 title="Minimize"
                             >
                                 <FiMinimize2 />
@@ -115,16 +115,16 @@ const ChatBot: React.FC = () => {
                         </div>
 
                         {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-ink-900">
                             {messages.map((msg) => (
                                 <div
                                     key={msg.id}
                                     className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div
-                                        className={`max-w-[80%] p-3 rounded-2xl shadow-sm text-sm ${msg.sender === 'user'
-                                            ? 'bg-blue-600 text-white rounded-br-none'
-                                            : 'bg-white text-gray-800 border border-gray-100 rounded-bl-none'
+                                        className={`max-w-[80%] p-3 rounded-none shadow-sm text-sm ${msg.sender === 'user'
+                                            ? 'bg-accent text-white rounded-br-none'
+                                            : 'bg-ink-800 text-white border border-ink-700 rounded-bl-none'
                                             }`}
                                     >
                                         {msg.text}
@@ -133,10 +133,10 @@ const ChatBot: React.FC = () => {
                             ))}
                             {isLoading && (
                                 <div className="flex justify-start">
-                                    <div className="bg-gray-200 p-3 rounded-2xl rounded-bl-none animate-pulse flex space-x-1 items-center h-8">
-                                        <div className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                        <div className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                        <div className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                    <div className="bg-ink-700 p-3 rounded-none rounded-bl-none animate-pulse flex space-x-1 items-center h-8">
+                                        <div className="w-1.5 h-1.5 bg-ink-700 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                        <div className="w-1.5 h-1.5 bg-ink-700 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                        <div className="w-1.5 h-1.5 bg-ink-700 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                                     </div>
                                 </div>
                             )}
@@ -144,7 +144,7 @@ const ChatBot: React.FC = () => {
                         </div>
 
                         {/* Input */}
-                        <div className="p-4 bg-white border-t border-gray-100">
+                        <div className="p-4 bg-ink-800 border-t border-ink-700">
                             <div className="flex space-x-2">
                                 <input
                                     type="text"
@@ -152,14 +152,14 @@ const ChatBot: React.FC = () => {
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={handleKeyPress}
                                     placeholder="Ask about stock, sales..."
-                                    className="flex-1 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    className="flex-1 p-2 border border-ink-700 rounded-none focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                                 />
                                 <button
                                     onClick={handleSend}
                                     disabled={isLoading || !input.trim()}
-                                    className={`p-2 rounded-lg text-white transition-colors ${isLoading || !input.trim()
+                                    className={`p-2 rounded-none text-white transition-colors ${isLoading || !input.trim()
                                         ? 'bg-blue-300 cursor-not-allowed'
-                                        : 'bg-blue-600 hover:bg-blue-700'
+                                        : 'bg-accent hover:bg-accent-hover'
                                         }`}
                                 >
                                     <FiSend />

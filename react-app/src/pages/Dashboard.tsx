@@ -120,8 +120,8 @@ export default function Dashboard() {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-500 font-medium">Loading Supply Chain Center...</p>
+          <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-400 font-medium">Loading Supply Chain Center...</p>
         </div>
       </div>
     );
@@ -130,10 +130,10 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* NARRATIVE SECTION */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-accent to-accent-hover rounded-none p-8 text-white shadow-xl relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+            <div className="p-2 bg-ink-800/20 backdrop-blur-sm rounded-none">
               <MessageSquare className="w-6 h-6 text-white" />
             </div>
             <h2 className="text-xl font-bold">Agent Update</h2>
@@ -146,9 +146,9 @@ export default function Dashboard() {
             <button
               onClick={handleStartAgent}
               disabled={agentStatus === 'running'}
-              className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg ${agentStatus === 'running'
-                ? 'bg-white/10 text-white/50 cursor-not-allowed'
-                : 'bg-white text-indigo-600 hover:bg-slate-50 active:scale-95'
+              className={`px-6 py-3 rounded-none font-bold flex items-center gap-2 transition-all shadow-lg ${agentStatus === 'running'
+                ? 'bg-ink-800/10 text-white/50 cursor-not-allowed'
+                : 'bg-ink-800 text-accent hover:bg-ink-900 active:scale-95'
                 }`}
             >
               {agentStatus === 'running' ? (
@@ -167,39 +167,39 @@ export default function Dashboard() {
         </div>
 
         {/* Background blobs */}
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-ink-800/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-accent/20 rounded-full blur-3xl"></div>
       </div>
 
       {/* KPI Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Link to="/settings" className="block transform transition-transform hover:-translate-y-1">
           <KPI
-            icon={<DollarSign className="w-6 h-6 text-green-600" />}
+            icon={<DollarSign className="w-6 h-6 text-emerald-400" />}
             label="Budget Remaining"
             value={`$${stats.budgetRemaining.toLocaleString()}`}
-            color="bg-green-50"
+            color="bg-emerald-500/10"
             action={stats.budgetRemaining < 1000 ? "Add Funds" : undefined}
           />
         </Link>
         <KPI
-          icon={<Clock className="w-6 h-6 text-orange-600" />}
+          icon={<Clock className="w-6 h-6 text-orange-400" />}
           label="Pending Approvals"
           value={stats.pendingApprovals}
-          color="bg-orange-50"
+          color="bg-orange-500/10"
           highlight={stats.pendingApprovals > 0}
         />
         <KPI
-          icon={<AlertTriangle className="w-6 h-6 text-red-600" />}
+          icon={<AlertTriangle className="w-6 h-6 text-red-400" />}
           label="Critical Alerts"
           value={stats.activeAlerts}
-          color="bg-red-50"
+          color="bg-red-500/10"
         />
         <KPI
-          icon={<Package className="w-6 h-6 text-blue-600" />}
+          icon={<Package className="w-6 h-6 text-accent" />}
           label="Total SKUs"
           value={stats.inventoryCount}
-          color="bg-blue-50"
+          color="bg-accent/10"
         />
       </div>
 
@@ -207,56 +207,56 @@ export default function Dashboard() {
 
         {/* Main Section: Action Items (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-indigo-600" />
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-accent" />
             Action Required
           </h2>
 
           {pendingOrders.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 text-center border border-slate-100 shadow-sm border-dashed">
-              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-ink-800 rounded-none p-12 text-center border border-ink-700 shadow-sm border-dashed">
+              <div className="w-16 h-16 bg-ink-900 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-slate-300" />
               </div>
-              <h3 className="text-lg font-medium text-slate-900">All Caught Up!</h3>
-              <p className="text-slate-500 mt-2">The agent hasn't found any new issues to solve.</p>
+              <h3 className="text-lg font-medium text-white">All Caught Up!</h3>
+              <p className="text-slate-400 mt-2">The agent hasn't found any new issues to solve.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden animate-fade-in">
+            <div className="bg-ink-800 rounded-none shadow-sm border border-ink-700 overflow-hidden animate-fade-in">
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
+                  <thead className="bg-ink-900 border-b border-ink-700">
                     <tr>
-                      <th className="px-6 py-4 text-sm font-semibold text-slate-600">Product</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-slate-600">Qty</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-slate-600">Cost</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-slate-600">Agent Reasoning</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-slate-600 text-right">Decision</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-400">Product</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-400">Qty</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-400">Cost</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-400">Agent Reasoning</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-slate-400 text-right">Decision</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {pendingOrders.map((order) => (
-                      <tr key={order.id} className="hover:bg-slate-50 transition-colors">
+                      <tr key={order.id} className="hover:bg-ink-900 transition-colors">
                         <td className="px-6 py-4">
-                          <div className="font-bold text-slate-900">{order.product_name}</div>
-                          <div className="text-xs text-slate-400 font-mono">{order.sku}</div>
+                          <div className="font-bold text-white">{order.product_name}</div>
+                          <div className="text-xs text-slate-500 font-mono">{order.sku}</div>
                         </td>
-                        <td className="px-6 py-4 font-medium text-slate-700">{order.quantity} units</td>
-                        <td className="px-6 py-4 text-slate-600 font-mono">${(order.total_price || 0).toLocaleString()}</td>
+                        <td className="px-6 py-4 font-medium text-slate-300">{order.quantity} units</td>
+                        <td className="px-6 py-4 text-slate-400 font-mono">${(order.total_price || 0).toLocaleString()}</td>
                         <td className="px-6 py-4 max-w-xs">
-                          <div className="text-sm text-slate-600 italic">
+                          <div className="text-sm text-slate-400 italic">
                             "{parseReason(order.notes)}"
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                           <button
                             onClick={() => handleApproveOrder(order.id)}
-                            className="px-3 py-1.5 bg-green-50 text-green-700 text-sm font-bold rounded-lg hover:bg-green-100 transition-colors border border-green-200"
+                            className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 text-sm font-bold rounded-none hover:bg-emerald-500/15 transition-colors border border-emerald-500/30"
                           >
                             Approve
                           </button>
                           <button
                             onClick={() => handleRejectOrder(order.id)}
-                            className="px-3 py-1.5 bg-white text-slate-500 text-sm font-medium rounded-lg hover:bg-slate-100 transition-colors border border-slate-200"
+                            className="px-3 py-1.5 bg-ink-800 text-slate-400 text-sm font-medium rounded-none hover:bg-ink-900 transition-colors border border-ink-700"
                           >
                             Reject
                           </button>
@@ -272,22 +272,22 @@ export default function Dashboard() {
 
         {/* Sidebar: Recent Activity (1/3 width) */}
         <div className="space-y-6">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-indigo-600" />
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <Activity className="w-5 h-5 text-accent" />
             Recent Activity
           </h2>
 
-          <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 space-y-4">
-            {recentJobs.length === 0 && <p className="text-slate-500 text-sm">No recent activity.</p>}
+          <div className="bg-ink-800 rounded-none shadow-sm border border-ink-700 p-4 space-y-4">
+            {recentJobs.length === 0 && <p className="text-slate-400 text-sm">No recent activity.</p>}
             {recentJobs.map((job, idx) => (
               <div key={idx} className="flex gap-3 pb-3 border-b last:border-0 border-slate-50">
                 <div className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${job.status === 'completed' ? 'bg-emerald-500' :
-                  job.status === 'running' ? 'bg-blue-500 animate-pulse' : 'bg-slate-300'
+                  job.status === 'running' ? 'bg-accent animate-pulse' : 'bg-ink-700'
                   }`} />
                 <div>
-                  <p className="text-sm font-medium text-slate-900 capitalize">{job.status}</p>
-                  <p className="text-xs text-slate-500 font-mono">ID: {job.id?.substring(0, 8)}</p>
-                  <span className="text-xs text-slate-400">{new Date(job.created_at).toLocaleString()}</span>
+                  <p className="text-sm font-medium text-white capitalize">{job.status}</p>
+                  <p className="text-xs text-slate-400 font-mono">ID: {job.id?.substring(0, 8)}</p>
+                  <span className="text-xs text-slate-500">{new Date(job.created_at).toLocaleString()}</span>
                 </div>
               </div>
             ))}
@@ -306,16 +306,16 @@ function KPI({ icon, label, value, color, highlight = false, action }: any) {
       <div className="flex items-start justify-between h-full">
         <div className="flex flex-col justify-between h-full">
           <div>
-            <p className="text-sm font-medium text-slate-500">{label}</p>
-            <h3 className="text-2xl font-bold text-slate-900 mt-1">{value}</h3>
+            <p className="text-sm font-medium text-slate-400">{label}</p>
+            <h3 className="text-2xl font-bold text-white mt-1">{value}</h3>
           </div>
           {action && (
-            <div className="mt-2 text-xs font-bold text-indigo-600 flex items-center gap-1">
+            <div className="mt-2 text-xs font-bold text-accent flex items-center gap-1">
               {action} <ArrowRight className="w-3 h-3" />
             </div>
           )}
         </div>
-        <div className={`p-3 rounded-xl ${color}`}>
+        <div className={`p-3 rounded-none ${color}`}>
           {icon}
         </div>
       </div>

@@ -274,7 +274,7 @@ export default function AgentComplete() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-ink-900 to-ink-800 p-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
 
         {/* Main Content Area */}
@@ -282,18 +282,18 @@ export default function AgentComplete() {
           {/* Header */}
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-                <Zap className="w-10 h-10 text-purple-600" />
+              <h1 className="text-4xl font-bold text-white flex items-center gap-3">
+                <Zap className="w-10 h-10 text-accent" />
                 Agent Control
               </h1>
-              <p className="text-gray-600 mt-2">Monitor real-time decisions and learning</p>
+              <p className="text-slate-400 mt-2">Monitor real-time decisions and learning</p>
             </div>
             <button
               onClick={handleRunAgent}
               disabled={agentRunning}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap ${agentRunning
-                ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg'
+              className={`flex items-center gap-2 px-6 py-3 rounded-none font-semibold transition whitespace-nowrap ${agentRunning
+                ? 'bg-ink-700 text-white cursor-not-allowed'
+                : 'bg-gradient-to-r from-accent to-accent-hover text-white hover:shadow-lg'
                 }`}
             >
               {agentRunning ? (
@@ -321,13 +321,13 @@ export default function AgentComplete() {
 
           {/* Current Cycle Status */}
           {currentCycle && (
-            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6 border-l-4 border-blue-600 shadow-sm">
+            <div className="bg-gradient-to-r from-accent/10 to-accent/5 rounded-none p-6 border-l-4 border-accent shadow-sm">
               <div className="flex justify-between items-start">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Current Cycle</h3>
+                <h3 className="text-lg font-bold text-white mb-3">Current Cycle</h3>
                 {currentCycle.status === 'complete' && !summary && (
                   <button
                     onClick={() => fetchSummary(currentCycle.job_id)}
-                    className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition flex items-center gap-2"
+                    className="px-4 py-2 bg-accent text-white text-sm font-semibold rounded-none hover:bg-accent-hover transition flex items-center gap-2"
                   >
                     <Zap className="w-4 h-4" /> Generate Summary
                   </button>
@@ -335,20 +335,20 @@ export default function AgentComplete() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Job ID</p>
+                  <p className="text-sm text-slate-400">Job ID</p>
                   <p className="font-mono font-medium">{currentCycle.job_id?.slice(0, 8)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Status</p>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${currentCycle.status === 'running' ? 'bg-blue-200 text-blue-800' :
-                    currentCycle.status === 'complete' ? 'bg-green-200 text-green-800' :
-                      'bg-gray-200 text-gray-800'
+                  <p className="text-sm text-slate-400">Status</p>
+                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${currentCycle.status === 'running' ? 'bg-accent/25 text-accent' :
+                    currentCycle.status === 'complete' ? 'bg-green-200 text-emerald-300' :
+                      'bg-ink-700 text-white'
                     }`}>
                     {currentCycle.status}
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Started</p>
+                  <p className="text-sm text-slate-400">Started</p>
                   <p className="text-sm font-medium">{new Date(currentCycle.started_at).toLocaleTimeString()}</p>
                 </div>
               </div>
@@ -356,13 +356,13 @@ export default function AgentComplete() {
           )}
 
           {/* Tab Navigation */}
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden min-h-[500px]">
-            <div className="flex border-b border-gray-200">
+          <div className="bg-ink-800 rounded-none shadow-lg border border-ink-700 overflow-hidden min-h-[500px]">
+            <div className="flex border-b border-ink-700">
               <button
                 onClick={() => setActiveTab('stream')}
                 className={`flex-1 py-4 text-center font-medium text-sm transition-colors ${activeTab === 'stream'
-                  ? 'text-purple-600 border-b-2 border-purple-600 bg-purple-50'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'text-accent border-b-2 border-accent bg-accent/10'
+                  : 'text-slate-400 hover:text-slate-300 hover:bg-ink-900'
                   }`}
               >
                 <div className="flex items-center justify-center gap-2">
@@ -373,8 +373,8 @@ export default function AgentComplete() {
               <button
                 onClick={() => setActiveTab('summary')}
                 className={`flex-1 py-4 text-center font-medium text-sm transition-colors ${activeTab === 'summary'
-                  ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'text-accent border-b-2 border-accent bg-accent/10'
+                  : 'text-slate-400 hover:text-slate-300 hover:bg-ink-900'
                   }`}
               >
                 <div className="flex items-center justify-center gap-2">
@@ -388,22 +388,22 @@ export default function AgentComplete() {
               {activeTab === 'stream' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                      <Activity className="w-5 h-5 text-purple-600" />
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      <Activity className="w-5 h-5 text-accent" />
                       War Room Chat
                     </h2>
-                    <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded-full animate-pulse">
+                    <span className="text-xs font-medium px-2 py-1 bg-emerald-500/15 text-emerald-400 rounded-full animate-pulse">
                       ● Live Collaboration
                     </span>
                   </div>
 
-                  <div className="bg-gray-50 rounded-lg p-4 h-[500px] overflow-y-auto border border-gray-200 shadow-inner space-y-4">
+                  <div className="bg-ink-900 rounded-none p-4 h-[500px] overflow-y-auto border border-ink-700 shadow-inner space-y-4">
                     {streamEvents.length === 0 ? (
-                      <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                      <div className="h-full flex flex-col items-center justify-center text-slate-500">
                         <div className="flex -space-x-4 mb-4">
-                          <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center border-2 border-white">🔮</div>
-                          <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center border-2 border-white">📦</div>
-                          <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center border-2 border-white">💰</div>
+                          <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center border-2 border-white">🔮</div>
+                          <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center border-2 border-white">📦</div>
+                          <div className="w-12 h-12 rounded-full bg-amber-500/15 flex items-center justify-center border-2 border-white">💰</div>
                         </div>
                         <p>Waiting for the team to assemble...</p>
                         <p className="text-sm mt-2">Click "Run Agent" to start the session.</p>
@@ -411,20 +411,20 @@ export default function AgentComplete() {
                     ) : (
                       streamEvents.map((event, idx) => {
                         // Determine Persona based on event type
-                        let persona = { name: 'System', icon: '⚙️', color: 'bg-gray-200 text-gray-700', align: 'left' };
+                        let persona = { name: 'System', icon: '⚙️', color: 'bg-ink-700 text-slate-300', align: 'left' };
 
                         if (event.type === 'forecast' || event.type === 'forecast_done') {
-                          persona = { name: 'Forecaster', icon: '🔮', color: 'bg-purple-100 text-purple-800', align: 'left' };
+                          persona = { name: 'Forecaster', icon: '🔮', color: 'bg-accent/10 text-accent', align: 'left' };
                         } else if (event.type === 'decide' || event.type === 'decision_item') {
-                          persona = { name: 'Inventory Manager', icon: '📦', color: 'bg-blue-100 text-blue-800', align: 'left' };
+                          persona = { name: 'Inventory Manager', icon: '📦', color: 'bg-accent/10 text-accent', align: 'left' };
                         } else if (event.type === 'finance' || event.type === 'finance_feedback') {
-                          persona = { name: 'Finance Controller', icon: '💰', color: 'bg-yellow-100 text-yellow-800', align: 'right' };
+                          persona = { name: 'Finance Controller', icon: '💰', color: 'bg-amber-500/15 text-amber-300', align: 'right' };
                         } else if (event.type === 'act' || event.type === 'action_item') {
-                          persona = { name: 'Procurement', icon: '🛒', color: 'bg-green-100 text-green-800', align: 'right' };
+                          persona = { name: 'Procurement', icon: '🛒', color: 'bg-emerald-500/15 text-emerald-300', align: 'right' };
                         } else if (event.type === 'learn' || event.type === 'learn_item') {
-                          persona = { name: 'AI Analyst', icon: '🧠', color: 'bg-pink-100 text-pink-800', align: 'left' };
+                          persona = { name: 'AI Analyst', icon: '🧠', color: 'bg-pink-500/15 text-pink-300', align: 'left' };
                         } else if (event.type === 'error') {
-                          persona = { name: 'System Alert', icon: '🚨', color: 'bg-red-100 text-red-800', align: 'center' };
+                          persona = { name: 'System Alert', icon: '🚨', color: 'bg-red-500/15 text-red-300', align: 'center' };
                         } else if (event.type === 'agent_dialogue') {
                           // Render the new AgentDialogue component
                           return (
@@ -452,16 +452,16 @@ export default function AgentComplete() {
                             <div className={`flex max-w-[85%] ${isRight ? 'flex-row-reverse' : 'flex-row'} items-start gap-3 group`}>
 
                               {!isSystem && (
-                                <div className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-lg shadow-sm border border-gray-100 bg-white z-10`}>
+                                <div className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-lg shadow-sm border border-ink-700 bg-ink-800 z-10`}>
                                   {persona.icon}
                                 </div>
                               )}
 
                               <div className={`flex flex-col ${isRight ? 'items-end' : isSystem ? 'items-center' : 'items-start'}`}>
-                                {!isSystem && <span className="text-xs font-semibold text-gray-500 mb-1 ml-1">{persona.name}</span>}
+                                {!isSystem && <span className="text-xs font-semibold text-slate-400 mb-1 ml-1">{persona.name}</span>}
 
                                 <div className={`px-5 py-3 shadow-sm text-sm transition-all duration-200 hover:shadow-md ${persona.color} ${isSystem ? 'rounded-full text-xs font-mono py-1 px-3 opacity-75' :
-                                  isRight ? 'rounded-2xl rounded-tr-none' : 'rounded-2xl rounded-tl-none'
+                                  isRight ? 'rounded-none rounded-tr-none' : 'rounded-none rounded-tl-none'
                                   }`}>
                                   <div className="leading-relaxed">{event.message}</div>
 
@@ -481,7 +481,7 @@ export default function AgentComplete() {
                                 </div>
 
                                 {!isSystem && (
-                                  <span className="text-[10px] text-gray-300 mt-1 px-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <span className="text-[10px] text-slate-300 mt-1 px-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     {new Date(event.timestamp || '').toLocaleTimeString()}
                                   </span>
                                 )}
@@ -502,16 +502,16 @@ export default function AgentComplete() {
                 <div className="animate-fade-in space-y-6">
                   {/* AI Summary Section */}
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-indigo-600" />
+                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-accent" />
                       AI Generated Summary
                     </h2>
                     {summary ? (
-                      <div className="prose prose-indigo max-w-none text-gray-700 whitespace-pre-line bg-indigo-50 p-6 rounded-lg border border-indigo-100 max-h-[400px] overflow-y-auto">
+                      <div className="prose prose-indigo max-w-none text-slate-300 whitespace-pre-line bg-accent/10 p-6 rounded-none border border-indigo-100 max-h-[400px] overflow-y-auto">
                         {summary}
                       </div>
                     ) : (
-                      <div className="p-6 flex flex-col items-center justify-center text-gray-500 bg-gray-50 rounded-lg border border-gray-100 border-dashed">
+                      <div className="p-6 flex flex-col items-center justify-center text-slate-400 bg-ink-900 rounded-none border border-ink-700 border-dashed">
                         {agentRunning ? (
                           <p className="animate-pulse">Generating summary...</p>
                         ) : (
@@ -524,13 +524,13 @@ export default function AgentComplete() {
                   {/* Structured Decisions Table */}
                   {cycleResult?.decisions && cycleResult.decisions.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                         <AlertTriangle className="w-5 h-5 text-orange-500" />
                         Key Decisions (Reorders Needed)
                       </h3>
-                      <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                      <div className="overflow-x-auto border border-ink-700 rounded-none">
                         <table className="w-full text-sm text-left">
-                          <thead className="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
+                          <thead className="bg-ink-900 text-slate-400 font-medium border-b border-ink-700">
                             <tr>
                               <th className="py-3 px-4">SKU</th>
                               <th className="py-3 px-4">Confidence</th>
@@ -540,16 +540,16 @@ export default function AgentComplete() {
                           </thead>
                           <tbody>
                             {cycleResult.decisions.map((decision: any, idx: number) => (
-                              <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
+                              <tr key={idx} className="border-b border-ink-700 hover:bg-ink-900">
                                 <td className="py-3 px-4 font-medium">{decision.sku}</td>
                                 <td className="py-3 px-4">{(decision.confidence * 100).toFixed(0)}%</td>
-                                <td className="py-3 px-4 text-gray-600 truncate max-w-md" title={decision.reasoning}>
+                                <td className="py-3 px-4 text-slate-400 truncate max-w-md" title={decision.reasoning}>
                                   {decision.reasoning}
                                 </td>
                                 <td className="py-3 px-4 text-center">
                                   <button
                                     onClick={() => setSelectedDecision(decision)}
-                                    className="text-blue-600 hover:text-blue-800 hover:underline font-semibold text-sm flex items-center justify-center gap-1 mx-auto"
+                                    className="text-accent hover:text-accent hover:underline font-semibold text-sm flex items-center justify-center gap-1 mx-auto"
                                   >
                                     Why? <span className="text-xs">🔍</span>
                                   </button>
@@ -565,13 +565,13 @@ export default function AgentComplete() {
                   {/* Actions Table */}
                   {cycleResult?.actions && cycleResult.actions.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-green-500" />
                         Actions Executed
                       </h3>
-                      <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                      <div className="overflow-x-auto border border-ink-700 rounded-none">
                         <table className="w-full text-sm text-left">
-                          <thead className="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
+                          <thead className="bg-ink-900 text-slate-400 font-medium border-b border-ink-700">
                             <tr>
                               <th className="py-3 px-4">Action</th>
                               <th className="py-3 px-4">SKU</th>
@@ -582,13 +582,13 @@ export default function AgentComplete() {
                           </thead>
                           <tbody>
                             {cycleResult.actions.map((action: any, idx: number) => (
-                              <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
-                                <td className="py-3 px-4 font-medium text-blue-600">{action.action_type}</td>
+                              <tr key={idx} className="border-b border-ink-700 hover:bg-ink-900">
+                                <td className="py-3 px-4 font-medium text-accent">{action.action_type}</td>
                                 <td className="py-3 px-4">{action.sku}</td>
                                 <td className="py-3 px-4">{action.quantity}</td>
                                 <td className="py-3 px-4">${action.total_cost?.toFixed(2)}</td>
                                 <td className="py-3 px-4">
-                                  <span className="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                  <span className="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300">
                                     Success
                                   </span>
                                 </td>
@@ -607,16 +607,16 @@ export default function AgentComplete() {
 
         {/* Sidebar - Recent Jobs */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden sticky top-6">
-            <div className="p-4 bg-gray-50 border-b border-gray-200">
-              <h2 className="font-bold text-gray-900 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-gray-600" />
+          <div className="bg-ink-800 rounded-none shadow-lg border border-ink-700 overflow-hidden sticky top-6">
+            <div className="p-4 bg-ink-900 border-b border-ink-700">
+              <h2 className="font-bold text-white flex items-center gap-2">
+                <Clock className="w-5 h-5 text-slate-400" />
                 Recent Cycles
               </h2>
             </div>
             <div className="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
               {recentJobs.length === 0 ? (
-                <div className="p-8 text-center text-gray-500 text-sm">
+                <div className="p-8 text-center text-slate-400 text-sm">
                   No recent jobs found.
                 </div>
               ) : (
@@ -624,26 +624,26 @@ export default function AgentComplete() {
                   <button
                     key={job.id}
                     onClick={() => loadJobDetails(job.id)}
-                    className="w-full text-left p-4 hover:bg-gray-50 transition group"
+                    className="w-full text-left p-4 hover:bg-ink-900 transition group"
                   >
                     <div className="flex justify-between items-start mb-1">
-                      <span className="font-bold text-sm text-indigo-600">Cycle #{totalJobs - index}</span>
+                      <span className="font-bold text-sm text-accent">Cycle #{totalJobs - index}</span>
                       {job.status === 'completed' ? (
                         <CheckCircle className="w-4 h-4 text-green-500" />
                       ) : job.status === 'failed' ? (
                         <XCircle className="w-4 h-4 text-red-500" />
                       ) : (
-                        <div className="w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+                        <div className="w-4 h-4 rounded-full border-2 border-accent border-t-transparent animate-spin" />
                       )}
                     </div>
-                    <div className="text-sm font-medium text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
+                    <div className="text-sm font-medium text-white mb-1 group-hover:text-accent transition-colors">
                       {new Date(job.created_at).toLocaleString(undefined, {
                         month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                       })}
                     </div>
-                    <div className="text-xs text-gray-500 capitalize flex justify-between">
+                    <div className="text-xs text-slate-400 capitalize flex justify-between">
                       <span>{job.status.replace('_', ' ')}</span>
-                      <span className="font-mono text-[10px] text-gray-400">#{job.id.slice(0, 6)}</span>
+                      <span className="font-mono text-[10px] text-slate-500">#{job.id.slice(0, 6)}</span>
                     </div>
                   </button>
                 ))

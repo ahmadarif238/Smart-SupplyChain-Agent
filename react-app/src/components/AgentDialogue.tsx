@@ -18,30 +18,30 @@ export default function AgentDialogue({ dialogue }: AgentDialogueProps) {
     const isApproval = dialogue.type === 'override_approval';
 
     const getStyles = () => {
-        if (isRejection) return 'bg-red-50 border-red-200 text-red-800';
-        if (isCounter) return 'bg-orange-50 border-orange-200 text-orange-800';
-        if (isApproval) return 'bg-green-50 border-green-200 text-green-800';
-        return 'bg-gray-50 border-gray-200 text-gray-800';
+        if (isRejection) return 'bg-red-500/10 border-red-500/30 text-red-300';
+        if (isCounter) return 'bg-orange-500/10 border-orange-500/30 text-orange-300';
+        if (isApproval) return 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
+        return 'bg-ink-900 border-ink-700 text-white';
     };
 
     const getIcon = () => {
-        if (isRejection) return <AlertCircle className="w-5 h-5 text-red-600" />;
-        if (isCounter) return <MessageSquare className="w-5 h-5 text-orange-600" />;
-        if (isApproval) return <CheckCircle className="w-5 h-5 text-green-600" />;
-        return <MessageSquare className="w-5 h-5 text-gray-600" />;
+        if (isRejection) return <AlertCircle className="w-5 h-5 text-red-400" />;
+        if (isCounter) return <MessageSquare className="w-5 h-5 text-orange-400" />;
+        if (isApproval) return <CheckCircle className="w-5 h-5 text-emerald-400" />;
+        return <MessageSquare className="w-5 h-5 text-slate-400" />;
     };
 
     const getAgentColor = (agent: string) => {
         switch (agent) {
-            case 'Finance': return 'bg-yellow-100 text-yellow-800';
-            case 'Decision': return 'bg-blue-100 text-blue-800';
-            case 'Action': return 'bg-green-100 text-green-800';
-            default: return 'bg-gray-100 text-gray-800';
+            case 'Finance': return 'bg-amber-500/15 text-amber-300';
+            case 'Decision': return 'bg-accent/10 text-accent';
+            case 'Action': return 'bg-emerald-500/15 text-emerald-300';
+            default: return 'bg-ink-900 text-white';
         }
     };
 
     return (
-        <div className={`rounded-lg border p-4 mb-4 shadow-sm animate-fade-in ${getStyles()}`}>
+        <div className={`rounded-none border p-4 mb-4 shadow-sm animate-fade-in ${getStyles()}`}>
             <div className="flex items-start gap-3">
                 <div className="mt-1 flex-shrink-0">
                     {getIcon()}
@@ -54,7 +54,7 @@ export default function AgentDialogue({ dialogue }: AgentDialogueProps) {
 
                         {dialogue.target && (
                             <>
-                                <ArrowRight className="w-3 h-3 text-gray-400" />
+                                <ArrowRight className="w-3 h-3 text-slate-500" />
                                 <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${getAgentColor(dialogue.target)}`}>
                                     {dialogue.target}
                                 </span>

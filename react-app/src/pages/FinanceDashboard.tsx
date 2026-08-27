@@ -64,7 +64,7 @@ export default function FinanceDashboard() {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="text-xl text-gray-600">Loading finance data...</div>
+                <div className="text-xl text-slate-400">Loading finance data...</div>
             </div>
         );
     }
@@ -78,80 +78,80 @@ export default function FinanceDashboard() {
     return (
         <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                    <DollarSign className="w-8 h-8 text-green-600" />
+                <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                    <DollarSign className="w-8 h-8 text-emerald-400" />
                     Finance Dashboard
                 </h1>
-                <p className="text-gray-600 mt-2">Budget analytics, negotiation metrics, and spending forecasts</p>
+                <p className="text-slate-400 mt-2">Budget analytics, negotiation metrics, and spending forecasts</p>
             </div>
 
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <div className="bg-ink-800 rounded-none shadow p-6 border-l-4 border-green-500">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-gray-500">Current Budget</p>
-                            <p className="text-2xl font-bold text-gray-900">${summary?.current_budget?.toLocaleString()}</p>
+                            <p className="text-sm text-slate-400">Current Budget</p>
+                            <p className="text-2xl font-bold text-white">${summary?.current_budget?.toLocaleString()}</p>
                         </div>
                         <DollarSign className="w-10 h-10 text-green-500 opacity-20" />
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <div className="bg-ink-800 rounded-none shadow p-6 border-l-4 border-accent">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-gray-500">Total Spent</p>
-                            <p className="text-2xl font-bold text-gray-900">${summary?.spent?.toLocaleString()}</p>
+                            <p className="text-sm text-slate-400">Total Spent</p>
+                            <p className="text-2xl font-bold text-white">${summary?.spent?.toLocaleString()}</p>
                         </div>
-                        <TrendingUp className="w-10 h-10 text-blue-500 opacity-20" />
+                        <TrendingUp className="w-10 h-10 text-accent opacity-20" />
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                <div className="bg-ink-800 rounded-none shadow p-6 border-l-4 border-yellow-500">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-gray-500">Remaining</p>
-                            <p className="text-2xl font-bold text-gray-900">${summary?.remaining?.toLocaleString()}</p>
+                            <p className="text-sm text-slate-400">Remaining</p>
+                            <p className="text-2xl font-bold text-white">${summary?.remaining?.toLocaleString()}</p>
                         </div>
                         <BarChart3 className="w-10 h-10 text-yellow-500 opacity-20" />
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <div className="bg-ink-800 rounded-none shadow p-6 border-l-4 border-accent">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-gray-500">Avg ROI</p>
-                            <p className="text-2xl font-bold text-gray-900">{summary?.avg_roi?.toFixed(1)}x</p>
+                            <p className="text-sm text-slate-400">Avg ROI</p>
+                            <p className="text-2xl font-bold text-white">{summary?.avg_roi?.toFixed(1)}x</p>
                         </div>
-                        <TrendingUp className="w-10 h-10 text-purple-500 opacity-20" />
+                        <TrendingUp className="w-10 h-10 text-accent opacity-20" />
                     </div>
                 </div>
             </div>
 
             {/* Negotiation Success Rate */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-6 border border-purple-200">
+            <div className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-none shadow-lg p-6 border border-accent/40">
                 <div className="flex items-center gap-3 mb-4">
-                    <Award className="w-6 h-6 text-purple-600" />
-                    <h2 className="text-xl font-bold text-gray-900">Negotiation Success Rate</h2>
+                    <Award className="w-6 h-6 text-accent" />
+                    <h2 className="text-xl font-bold text-white">Negotiation Success Rate</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="text-center">
-                        <p className="text-sm text-purple-700 mb-2">Total Rejections</p>
-                        <p className="text-4xl font-bold text-purple-600">{summary?.rejected_count || 0}</p>
+                        <p className="text-sm text-accent mb-2">Total Rejections</p>
+                        <p className="text-4xl font-bold text-accent">{summary?.rejected_count || 0}</p>
                     </div>
                     <div className="text-center">
-                        <p className="text-sm text-pink-700 mb-2">Successful Overrides</p>
-                        <p className="text-4xl font-bold text-pink-600">{summary?.override_count || 0}</p>
+                        <p className="text-sm text-pink-400 mb-2">Successful Overrides</p>
+                        <p className="text-4xl font-bold text-pink-400">{summary?.override_count || 0}</p>
                     </div>
                     <div className="text-center">
-                        <p className="text-sm text-indigo-700 mb-2">Success Rate</p>
-                        <p className="text-4xl font-bold text-indigo-600">{negotiationSuccessRate.toFixed(0)}%</p>
+                        <p className="text-sm text-accent mb-2">Success Rate</p>
+                        <p className="text-4xl font-bold text-accent">{negotiationSuccessRate.toFixed(0)}%</p>
                     </div>
                 </div>
 
-                <div className="mt-4 bg-white/50 rounded-lg p-4">
-                    <p className="text-sm text-slate-700">
+                <div className="mt-4 bg-ink-800/50 rounded-none p-4">
+                    <p className="text-sm text-slate-300">
                         <strong>What this means:</strong> {negotiationSuccessRate > 50 ?
                             'Agent is highly effective at negotiating budget overrides for critical items! 🌟' :
                             negotiationSuccessRate > 25 ?
@@ -162,21 +162,21 @@ export default function FinanceDashboard() {
             </div>
 
             {/* Budget Burn-Down */}
-            <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Budget Usage</h2>
+            <div className="bg-ink-800 rounded-none shadow p-6">
+                <h2 className="text-xl font-bold text-white mb-4">Budget Usage</h2>
                 <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Used: ${summary?.spent?.toLocaleString()}</span>
-                        <span className="text-gray-600">{budgetUsedPercent.toFixed(1)}%</span>
+                        <span className="text-slate-400">Used: ${summary?.spent?.toLocaleString()}</span>
+                        <span className="text-slate-400">{budgetUsedPercent.toFixed(1)}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-4">
+                    <div className="w-full bg-ink-700 rounded-full h-4">
                         <div
                             className={`h-4 rounded-full transition-all ${budgetUsedPercent > 90 ? 'bg-red-500' : budgetUsedPercent > 70 ? 'bg-yellow-500' : 'bg-green-500'
                                 }`}
                             style={{ width: `${Math.min(budgetUsedPercent, 100)}%` }}
                         ></div>
                     </div>
-                    <div className="flex justify-between text-sm text-gray-500">
+                    <div className="flex justify-between text-sm text-slate-400">
                         <span>$0</span>
                         <span>${summary?.current_budget?.toLocaleString()}</span>
                     </div>
@@ -184,10 +184,10 @@ export default function FinanceDashboard() {
             </div>
 
             {/* Budget Forecast Chart */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-ink-800 rounded-none shadow p-6">
                 <div className="flex items-center gap-3 mb-4">
-                    <Calendar className="w-6 h-6 text-blue-600" />
-                    <h2 className="text-xl font-bold text-gray-900">7-Day Budget Forecast</h2>
+                    <Calendar className="w-6 h-6 text-accent" />
+                    <h2 className="text-xl font-bold text-white">7-Day Budget Forecast</h2>
                 </div>
                 <ResponsiveContainer width="100%" height={250}>
                     <LineChart data={budgetForecast}>
@@ -214,83 +214,83 @@ export default function FinanceDashboard() {
                         />
                     </LineChart>
                 </ResponsiveContainer>
-                <p className="text-sm text-slate-600 mt-4">
+                <p className="text-sm text-slate-400 mt-4">
                     <strong>Projection assumes:</strong> Average daily spending of ${((summary?.spent || 0) / 7).toFixed(0)}.
                     Actual spending may vary based on agent decisions and market conditions.
                 </p>
             </div>
 
             {/* Override History */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-ink-800 rounded-none shadow p-6">
                 <div className="flex items-center gap-3 mb-4">
-                    <MessageSquare className="w-6 h-6 text-indigo-600" />
-                    <h2 className="text-xl font-bold text-gray-900">Recent Override History</h2>
+                    <MessageSquare className="w-6 h-6 text-accent" />
+                    <h2 className="text-xl font-bold text-white">Recent Override History</h2>
                 </div>
 
                 <div className="space-y-3">
                     {overrideHistory.length > 0 ? overrideHistory.map((override, idx) => (
-                        <div key={idx} className={`p-4 rounded-lg border-l-4 ${override.success ? 'bg-green-50 border-green-500' : 'bg-red-50 border-red-500'}`}>
+                        <div key={idx} className={`p-4 rounded-none border-l-4 ${override.success ? 'bg-emerald-500/10 border-green-500' : 'bg-red-500/10 border-red-500'}`}>
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-3">
                                     {override.success ? (
-                                        <CheckCircle className="w-5 h-5 text-green-600" />
+                                        <CheckCircle className="w-5 h-5 text-emerald-400" />
                                     ) : (
-                                        <XCircle className="w-5 h-5 text-red-600" />
+                                        <XCircle className="w-5 h-5 text-red-400" />
                                     )}
                                     <div>
-                                        <p className="font-semibold text-slate-900">{override.sku}</p>
-                                        <p className="text-sm text-slate-600">{override.reason}</p>
+                                        <p className="font-semibold text-white">{override.sku}</p>
+                                        <p className="text-sm text-slate-400">{override.reason}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
                                     <p className="font-bold text-lg">${override.amount}</p>
-                                    <p className="text-xs text-slate-500">{new Date(override.date).toLocaleDateString()}</p>
+                                    <p className="text-xs text-slate-400">{new Date(override.date).toLocaleDateString()}</p>
                                 </div>
                             </div>
-                            <span className={`text-xs px-2 py-1 rounded-full ${override.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            <span className={`text-xs px-2 py-1 rounded-full ${override.success ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}>
                                 {override.success ? '✓ Override Approved' : '✗ Override Denied'}
                             </span>
                         </div>
                     )) : (
-                        <p className="text-sm text-slate-500 italic text-center py-8">No override history available yet.</p>
+                        <p className="text-sm text-slate-400 italic text-center py-8">No override history available yet.</p>
                     )}
                 </div>
             </div>
 
             {/* Approval Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-ink-800 rounded-none shadow p-6">
                     <div className="flex items-center gap-3 mb-2">
                         <CheckCircle className="w-6 h-6 text-green-500" />
-                        <h3 className="text-lg font-semibold text-gray-900">Approved</h3>
+                        <h3 className="text-lg font-semibold text-white">Approved</h3>
                     </div>
-                    <p className="text-3xl font-bold text-green-600">{summary?.approved_count}</p>
-                    <p className="text-sm text-gray-500 mt-1">Orders funded</p>
+                    <p className="text-3xl font-bold text-emerald-400">{summary?.approved_count}</p>
+                    <p className="text-sm text-slate-400 mt-1">Orders funded</p>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-ink-800 rounded-none shadow p-6">
                     <div className="flex items-center gap-3 mb-2">
                         <XCircle className="w-6 h-6 text-red-500" />
-                        <h3 className="text-lg font-semibold text-gray-900">Rejected</h3>
+                        <h3 className="text-lg font-semibold text-white">Rejected</h3>
                     </div>
-                    <p className="text-3xl font-bold text-red-600">{summary?.rejected_count}</p>
-                    <p className="text-sm text-gray-500 mt-1">Budget exceeded</p>
+                    <p className="text-3xl font-bold text-red-400">{summary?.rejected_count}</p>
+                    <p className="text-sm text-slate-400 mt-1">Budget exceeded</p>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-ink-800 rounded-none shadow p-6">
                     <div className="flex items-center gap-3 mb-2">
-                        <TrendingUp className="w-6 h-6 text-purple-500" />
-                        <h3 className="text-lg font-semibold text-gray-900">Overrides</h3>
+                        <TrendingUp className="w-6 h-6 text-accent" />
+                        <h3 className="text-lg font-semibold text-white">Overrides</h3>
                     </div>
-                    <p className="text-3xl font-bold text-purple-600">{summary?.override_count}</p>
-                    <p className="text-sm text-gray-500 mt-1">Negotiation wins</p>
+                    <p className="text-3xl font-bold text-accent">{summary?.override_count}</p>
+                    <p className="text-sm text-slate-400 mt-1">Negotiation wins</p>
                 </div>
             </div>
 
             {/* Info Box */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-900 mb-2">💡 Dynamic Budgeting</h3>
-                <p className="text-blue-800">
+            <div className="bg-accent/10 border border-accent/40 rounded-none p-6">
+                <h3 className="text-lg font-semibold text-accent mb-2">💡 Dynamic Budgeting</h3>
+                <p className="text-accent">
                     The budget automatically adjusts based on recent sales revenue: <strong>Base ($5,000) + 30% of 7-day revenue</strong>.
                     Orders are prioritized by ROI, and critical high-ROI items can override budget limits after agent negotiation.
                 </p>

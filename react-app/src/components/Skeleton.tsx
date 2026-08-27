@@ -13,13 +13,13 @@ export function Skeleton({
     height,
     count = 1
 }: SkeletonProps) {
-    const baseClass = "animate-pulse bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 bg-[length:200%_100%]";
+    const baseClass = "animate-pulse bg-gradient-to-r from-ink-700 via-ink-800 to-ink-700 bg-[length:200%_100%]";
 
     const variantClasses = {
         text: 'h-4 rounded',
         circular: 'rounded-full',
-        rectangular: 'rounded-lg',
-        card: 'rounded-xl'
+        rectangular: 'rounded-none',
+        card: 'rounded-none'
     };
 
     const style = {
@@ -43,7 +43,7 @@ export function Skeleton({
 // Card Skeleton
 export function CardSkeleton() {
     return (
-        <div className="bg-white rounded-xl p-6 border border-slate-200 space-y-4">
+        <div className="bg-ink-800 rounded-none p-6 border border-ink-700 space-y-4">
             <Skeleton variant="text" width="60%" height={24} />
             <Skeleton variant="rectangular" height={100} />
             <div className="grid grid-cols-3 gap-4">
@@ -59,14 +59,14 @@ export function CardSkeleton() {
 export function TableSkeleton({ rows = 5 }: { rows?: number }) {
     return (
         <div className="space-y-3">
-            <div className="bg-slate-50 rounded-lg p-4 grid grid-cols-4 gap-4">
+            <div className="bg-ink-900 rounded-none p-4 grid grid-cols-4 gap-4">
                 <Skeleton variant="text" />
                 <Skeleton variant="text" />
                 <Skeleton variant="text" />
                 <Skeleton variant="text" />
             </div>
             {Array.from({ length: rows }).map((_, idx) => (
-                <div key={idx} className="bg-white rounded-lg p-4 grid grid-cols-4 gap-4 border border-slate-100">
+                <div key={idx} className="bg-ink-800 rounded-none p-4 grid grid-cols-4 gap-4 border border-ink-700">
                     <Skeleton variant="text" />
                     <Skeleton variant="text" />
                     <Skeleton variant="text" />
@@ -80,7 +80,7 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
 // Chart Skeleton
 export function ChartSkeleton() {
     return (
-        <div className="bg-white rounded-xl p-6 border border-slate-200">
+        <div className="bg-ink-800 rounded-none p-6 border border-ink-700">
             <Skeleton variant="text" width="40%" height={20} className="mb-6" />
             <div className="flex items-end justify-between gap-2 h-64">
                 {Array.from({ length: 8 }).map((_, idx) => (

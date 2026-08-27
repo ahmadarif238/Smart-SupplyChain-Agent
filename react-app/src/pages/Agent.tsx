@@ -260,13 +260,13 @@ export default function Agent() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-emerald-500/15 text-emerald-300';
       case 'running':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-accent/10 text-accent';
       case 'failed':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-500/15 text-red-300';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-ink-900 text-white';
     }
   };
 
@@ -285,32 +285,32 @@ export default function Agent() {
 
   if (loading && jobs.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-ink-900 to-ink-800 p-8">
         <div className="max-w-7xl mx-auto">
-          <p className="text-gray-600 text-center py-12">Loading agent data...</p>
+          <p className="text-slate-400 text-center py-12">Loading agent data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-ink-900 to-ink-800 p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-2">
-              <Zap className="w-8 h-8 text-purple-600" />
+            <h1 className="text-4xl font-bold text-white flex items-center gap-2">
+              <Zap className="w-8 h-8 text-accent" />
               Intelligent Agent Control
             </h1>
-            <p className="text-gray-600 mt-2">Monitor and control the supply chain AI agent with live streaming</p>
+            <p className="text-slate-400 mt-2">Monitor and control the supply chain AI agent with live streaming</p>
           </div>
           <button
             onClick={handleRunAgent}
             disabled={agentRunning}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition ${agentRunning
-              ? 'bg-gray-400 text-white cursor-not-allowed'
-              : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg'
+            className={`flex items-center gap-2 px-6 py-3 rounded-none font-semibold transition ${agentRunning
+              ? 'bg-ink-700 text-white cursor-not-allowed'
+              : 'bg-gradient-to-r from-accent to-accent-hover text-white hover:shadow-lg'
               }`}
           >
             {agentRunning ? (
@@ -327,21 +327,21 @@ export default function Agent() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-300">
-            <p className="text-sm font-semibold text-blue-900 mb-1">Total Runs</p>
-            <p className="text-3xl font-bold text-blue-600">{stats.total}</p>
+          <div className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-none p-6 border border-accent/40">
+            <p className="text-sm font-semibold text-accent mb-1">Total Runs</p>
+            <p className="text-3xl font-bold text-accent">{stats.total}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-300">
-            <p className="text-sm font-semibold text-green-900 mb-1">Completed</p>
-            <p className="text-3xl font-bold text-green-600">{stats.completed}</p>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-none p-6 border border-emerald-500/30">
+            <p className="text-sm font-semibold text-emerald-300 mb-1">Completed</p>
+            <p className="text-3xl font-bold text-emerald-400">{stats.completed}</p>
           </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-300">
-            <p className="text-sm font-semibold text-purple-900 mb-1">Running</p>
-            <p className="text-3xl font-bold text-purple-600">{stats.running}</p>
+          <div className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-none p-6 border border-accent/40">
+            <p className="text-sm font-semibold text-accent mb-1">Running</p>
+            <p className="text-3xl font-bold text-accent">{stats.running}</p>
           </div>
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 border border-red-300">
-            <p className="text-sm font-semibold text-red-900 mb-1">Failed</p>
-            <p className="text-3xl font-bold text-red-600">{stats.failed}</p>
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-none p-6 border border-red-500/30">
+            <p className="text-sm font-semibold text-red-300 mb-1">Failed</p>
+            <p className="text-3xl font-bold text-red-400">{stats.failed}</p>
           </div>
         </div>
 
@@ -354,25 +354,25 @@ export default function Agent() {
         )}
 
         {/* Live Stream Console */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8 border-l-4 border-purple-600">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">🎬 Live Agent Stream</h2>
-          <div className="bg-gray-900 text-green-400 rounded-lg p-6 font-mono text-sm max-h-96 overflow-y-auto border border-gray-700">
+        <div className="bg-ink-800 rounded-none shadow-lg p-8 mb-8 border-l-4 border-accent">
+          <h2 className="text-2xl font-bold text-white mb-6">🎬 Live Agent Stream</h2>
+          <div className="bg-ink-950 text-green-400 rounded-none p-6 font-mono text-sm max-h-96 overflow-y-auto border border-gray-700">
             {streamEvents.length === 0 ? (
-              <p className="text-gray-500">Waiting for agent to run... Click "Run Agent Now" to start</p>
+              <p className="text-slate-400">Waiting for agent to run... Click "Run Agent Now" to start</p>
             ) : (
               streamEvents.map((event, idx) => (
                 <div key={idx} className="mb-2">
                   <span className={`${event.type === 'error' ? 'text-red-400' :
                     event.type === 'complete' ? 'text-green-300' :
                       event.type === 'decision_item' ? 'text-yellow-300' :
-                        event.type === 'action_item' ? 'text-blue-300' :
+                        event.type === 'action_item' ? 'text-accent' :
                           event.type === 'learn_item' ? 'text-purple-300' :
                             'text-green-400'
                     }`}>
                     {event.message}
                   </span>
                   {event.details && (
-                    <div className="ml-4 text-gray-400 text-xs">
+                    <div className="ml-4 text-slate-500 text-xs">
                       {typeof event.details === 'object'
                         ? JSON.stringify(event.details, null, 2)
                         : event.details}
@@ -389,29 +389,29 @@ export default function Agent() {
 
         {/* Cycle Result Summary */}
         {cycleResult && (
-          <div className="bg-white rounded-lg shadow-lg p-8 mb-8 border-l-4 border-green-500 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <div className="bg-ink-800 rounded-none shadow-lg p-8 mb-8 border-l-4 border-green-500 animate-fade-in">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <CheckCircle className="w-6 h-6 text-green-500" />
               Cycle Completed Successfully
             </h2>
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-500">SKUs Processed</p>
-                <p className="text-2xl font-bold text-gray-900">{cycleResult.skus_processed || 0}</p>
+              <div className="bg-ink-900 p-4 rounded-none">
+                <p className="text-sm text-slate-400">SKUs Processed</p>
+                <p className="text-2xl font-bold text-white">{cycleResult.skus_processed || 0}</p>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-500">Reorders Triggered</p>
-                <p className="text-2xl font-bold text-blue-600">{cycleResult.reorders_triggered || 0}</p>
+              <div className="bg-ink-900 p-4 rounded-none">
+                <p className="text-sm text-slate-400">Reorders Triggered</p>
+                <p className="text-2xl font-bold text-accent">{cycleResult.reorders_triggered || 0}</p>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-500">Actions Executed</p>
-                <p className="text-2xl font-bold text-purple-600">{cycleResult.actions_executed || 0}</p>
+              <div className="bg-ink-900 p-4 rounded-none">
+                <p className="text-sm text-slate-400">Actions Executed</p>
+                <p className="text-2xl font-bold text-accent">{cycleResult.actions_executed || 0}</p>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-500">Errors</p>
-                <p className={`text-2xl font-bold ${cycleResult.errors > 0 ? 'text-red-600' : 'text-green-600'}`}>
+              <div className="bg-ink-900 p-4 rounded-none">
+                <p className="text-sm text-slate-400">Errors</p>
+                <p className={`text-2xl font-bold ${cycleResult.errors > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                   {cycleResult.errors || 0}
                 </p>
               </div>
@@ -420,10 +420,10 @@ export default function Agent() {
             {/* Actions List */}
             {cycleResult.actions && cycleResult.actions.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">📦 Actions Executed</h3>
-                <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-3">📦 Actions Executed</h3>
+                <div className="overflow-x-auto border border-ink-700 rounded-none">
                   <table className="w-full text-sm text-left">
-                    <thead className="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
+                    <thead className="bg-ink-900 text-slate-400 font-medium border-b border-ink-700">
                       <tr>
                         <th className="py-3 px-4">Action</th>
                         <th className="py-3 px-4">SKU</th>
@@ -434,13 +434,13 @@ export default function Agent() {
                     </thead>
                     <tbody>
                       {cycleResult.actions.map((action: any, idx: number) => (
-                        <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="py-3 px-4 font-medium text-blue-600">{action.action_type}</td>
+                        <tr key={idx} className="border-b border-ink-700 hover:bg-ink-900">
+                          <td className="py-3 px-4 font-medium text-accent">{action.action_type}</td>
                           <td className="py-3 px-4">{action.sku}</td>
                           <td className="py-3 px-4">{action.quantity}</td>
                           <td className="py-3 px-4">${action.total_cost?.toFixed(2)}</td>
                           <td className="py-3 px-4">
-                            <span className="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                            <span className="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300">
                               Success
                             </span>
                           </td>
@@ -455,10 +455,10 @@ export default function Agent() {
             {/* Decisions List (Reorders) */}
             {cycleResult.decisions && cycleResult.decisions.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">⚠️ Key Decisions (Reorders Needed)</h3>
-                <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-3">⚠️ Key Decisions (Reorders Needed)</h3>
+                <div className="overflow-x-auto border border-ink-700 rounded-none">
                   <table className="w-full text-sm text-left">
-                    <thead className="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
+                    <thead className="bg-ink-900 text-slate-400 font-medium border-b border-ink-700">
                       <tr>
                         <th className="py-3 px-4">SKU</th>
                         <th className="py-3 px-4">Confidence</th>
@@ -468,16 +468,16 @@ export default function Agent() {
                     </thead>
                     <tbody>
                       {cycleResult.decisions.map((decision: any, idx: number) => (
-                        <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
+                        <tr key={idx} className="border-b border-ink-700 hover:bg-ink-900">
                           <td className="py-3 px-4 font-medium">{decision.sku}</td>
                           <td className="py-3 px-4">{(decision.confidence * 100).toFixed(0)}%</td>
-                          <td className="py-3 px-4 text-gray-600 truncate max-w-md" title={decision.reasoning}>
+                          <td className="py-3 px-4 text-slate-400 truncate max-w-md" title={decision.reasoning}>
                             {decision.reasoning}
                           </td>
                           <td className="py-3 px-4 text-center">
                             <button
                               onClick={() => setSelectedDecision(decision)}
-                              className="text-blue-600 hover:text-blue-800 hover:underline font-semibold text-sm"
+                              className="text-accent hover:text-accent hover:underline font-semibold text-sm"
                             >
                               Why? 🔍
                             </button>
@@ -494,46 +494,46 @@ export default function Agent() {
 
         {/* Current Job Details */}
         {currentJob && (
-          <div className="bg-white rounded-lg shadow-lg p-8 mb-8 border-l-4 border-purple-600">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Current Job Details</h2>
+          <div className="bg-ink-800 rounded-none shadow-lg p-8 mb-8 border-l-4 border-accent">
+            <h2 className="text-2xl font-bold text-white mb-6">Current Job Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div>
-                <p className="text-sm font-semibold text-gray-600 mb-1">Job ID</p>
-                <p className="font-mono text-lg text-gray-900">{currentJob.job_id?.slice(0, 16) || 'N/A'}...</p>
+                <p className="text-sm font-semibold text-slate-400 mb-1">Job ID</p>
+                <p className="font-mono text-lg text-white">{currentJob.job_id?.slice(0, 16) || 'N/A'}...</p>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-600 mb-1">Status</p>
+                <p className="text-sm font-semibold text-slate-400 mb-1">Status</p>
                 <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(currentJob.status)}`}>
                   {currentJob.status?.toUpperCase() || 'N/A'}
                 </span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-600 mb-1">Created</p>
-                <p className="text-gray-900">{new Date(currentJob.created_at).toLocaleString()}</p>
+                <p className="text-sm font-semibold text-slate-400 mb-1">Created</p>
+                <p className="text-white">{new Date(currentJob.created_at).toLocaleString()}</p>
               </div>
             </div>
           </div>
         )}
 
         {/* Job History */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Job History</h2>
+        <div className="bg-ink-800 rounded-none shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-white mb-4">Job History</h2>
 
           {jobs.length === 0 ? (
             <div className="text-center py-12">
-              <Zap className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">No agent runs yet</p>
+              <Zap className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-400 text-lg">No agent runs yet</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-300 bg-gray-50">
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Job ID</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Created</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Duration</th>
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">Actions</th>
+                  <tr className="border-b border-ink-700 bg-ink-900">
+                    <th className="text-left py-3 px-4 font-semibold text-slate-300">Job ID</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-300">Status</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-300">Created</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-300">Duration</th>
+                    <th className="text-right py-3 px-4 font-semibold text-slate-300">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -545,10 +545,10 @@ export default function Agent() {
                       : '-';
 
                     return (
-                      <tr key={idx} className="border-b border-gray-200 hover:bg-gray-50 transition">
+                      <tr key={idx} className="border-b border-ink-700 hover:bg-ink-900 transition">
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-2">
-                            <StatusIcon className="w-4 h-4 text-blue-600" />
+                            <StatusIcon className="w-4 h-4 text-accent" />
                             <span className="font-mono text-sm">{jobId?.slice(0, 12) || 'N/A'}...</span>
                           </div>
                         </td>
@@ -557,14 +557,14 @@ export default function Agent() {
                             {job.status}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-sm text-gray-600">
+                        <td className="py-3 px-4 text-sm text-slate-400">
                           {new Date(job.created_at).toLocaleString()}
                         </td>
-                        <td className="py-3 px-4 text-sm text-gray-600">
+                        <td className="py-3 px-4 text-sm text-slate-400">
                           {duration}
                         </td>
                         <td className="py-3 px-4 text-right">
-                          <button className="text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                          <button className="text-accent hover:text-accent font-semibold text-sm">
                             View Details
                           </button>
                         </td>
@@ -579,24 +579,24 @@ export default function Agent() {
 
         {/* Agent Performance */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-300">
-            <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-green-600" />
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-none p-6 border border-emerald-500/30">
+            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-emerald-400" />
               Success Rate
             </h3>
-            <p className="text-3xl font-bold text-green-600 mb-2">
+            <p className="text-3xl font-bold text-emerald-400 mb-2">
               {stats.total > 0 ? ((stats.completed / stats.total) * 100).toFixed(1) : 0}%
             </p>
-            <p className="text-sm text-gray-700">{stats.completed} of {stats.total} runs completed successfully</p>
+            <p className="text-sm text-slate-300">{stats.completed} of {stats.total} runs completed successfully</p>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-300">
-            <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-blue-600" />
+          <div className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-none p-6 border border-accent/40">
+            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-accent" />
               Average Cycle Time
             </h3>
-            <p className="text-3xl font-bold text-blue-600 mb-2">~60s</p>
-            <p className="text-sm text-gray-700">Time to complete one full agent cycle</p>
+            <p className="text-3xl font-bold text-accent mb-2">~60s</p>
+            <p className="text-sm text-slate-300">Time to complete one full agent cycle</p>
           </div>
         </div>
       </div>

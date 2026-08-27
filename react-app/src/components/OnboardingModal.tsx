@@ -12,7 +12,7 @@ export default function OnboardingModal({ onClose }: OnboardingModalProps) {
         {
             title: "Welcome to SupplyChain AI",
             description: "Your autonomous AI agent for smart inventory management. Let me show you how it works!",
-            icon: <Cpu className="w-12 h-12 text-indigo-500" />,
+            icon: <Cpu className="w-12 h-12 text-accent" />,
             features: [
                 "LLM-powered demand forecasting",
                 "Automatic reorder recommendations",
@@ -45,7 +45,7 @@ export default function OnboardingModal({ onClose }: OnboardingModalProps) {
         {
             title: "3. Configure Your Budget",
             description: "Control how much the agent can spend:",
-            icon: <Settings className="w-12 h-12 text-purple-500" />,
+            icon: <Settings className="w-12 h-12 text-accent" />,
             features: [
                 "Go to Settings page",
                 "Set your weekly budget limit",
@@ -59,12 +59,12 @@ export default function OnboardingModal({ onClose }: OnboardingModalProps) {
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-fade-in">
+            <div className="bg-ink-800 rounded-none shadow-2xl max-w-lg w-full overflow-hidden animate-fade-in">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white relative">
+                <div className="bg-gradient-to-r from-accent to-accent-hover p-6 text-white relative">
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 p-1 hover:bg-white/20 rounded-lg transition-colors"
+                        className="absolute top-4 right-4 p-1 hover:bg-ink-800/20 rounded-none transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -72,7 +72,7 @@ export default function OnboardingModal({ onClose }: OnboardingModalProps) {
                         {steps[step].icon}
                         <div>
                             <h2 className="text-xl font-bold">{steps[step].title}</h2>
-                            <p className="text-indigo-100 text-sm mt-1">{steps[step].description}</p>
+                            <p className="text-accent text-sm mt-1">{steps[step].description}</p>
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@ export default function OnboardingModal({ onClose }: OnboardingModalProps) {
                         {steps[step].features.map((feature, idx) => (
                             <li key={idx} className="flex items-start gap-3">
                                 <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                                <span className="text-slate-700">{feature}</span>
+                                <span className="text-slate-300">{feature}</span>
                             </li>
                         ))}
                     </ul>
@@ -97,7 +97,7 @@ export default function OnboardingModal({ onClose }: OnboardingModalProps) {
                             <button
                                 key={idx}
                                 onClick={() => setStep(idx)}
-                                className={`w-2 h-2 rounded-full transition-colors ${idx === step ? 'bg-indigo-600' : 'bg-slate-300 hover:bg-slate-400'
+                                className={`w-2 h-2 rounded-full transition-colors ${idx === step ? 'bg-accent' : 'bg-ink-700 hover:bg-slate-400'
                                     }`}
                             />
                         ))}
@@ -108,14 +108,14 @@ export default function OnboardingModal({ onClose }: OnboardingModalProps) {
                         {step > 0 && (
                             <button
                                 onClick={() => setStep(step - 1)}
-                                className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium"
+                                className="px-4 py-2 text-slate-400 hover:text-white font-medium"
                             >
                                 Back
                             </button>
                         )}
                         <button
                             onClick={() => isLastStep ? onClose() : setStep(step + 1)}
-                            className="flex items-center gap-2 px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                            className="flex items-center gap-2 px-5 py-2 bg-accent text-white font-medium rounded-none hover:bg-accent-hover transition-colors"
                         >
                             {isLastStep ? "Get Started" : "Next"}
                             <ArrowRight className="w-4 h-4" />

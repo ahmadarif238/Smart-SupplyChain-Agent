@@ -93,20 +93,20 @@ export default function MemoryExplorer() {
         <div className="space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                    <Database className="w-7 h-7 text-indigo-600" />
+                <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                    <Database className="w-7 h-7 text-accent" />
                     Agent Memory Explorer
                 </h1>
-                <p className="text-slate-500 mt-1">Browse semantic facts, episodic memories, and system checkpoints</p>
+                <p className="text-slate-400 mt-1">Browse semantic facts, episodic memories, and system checkpoints</p>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2 border-b border-slate-200">
+            <div className="flex gap-2 border-b border-ink-700">
                 <button
                     onClick={() => setActiveTab('facts')}
                     className={`px-6 py-3 font-medium transition-colors border-b-2 ${activeTab === 'facts'
-                        ? 'border-indigo-600 text-indigo-600'
-                        : 'border-transparent text-slate-600 hover:text-slate-900'
+                        ? 'border-accent text-accent'
+                        : 'border-transparent text-slate-400 hover:text-white'
                         }`}
                 >
                     <div className="flex items-center gap-2">
@@ -117,8 +117,8 @@ export default function MemoryExplorer() {
                 <button
                     onClick={() => setActiveTab('episodes')}
                     className={`px-6 py-3 font-medium transition-colors border-b-2 ${activeTab === 'episodes'
-                        ? 'border-indigo-600 text-indigo-600'
-                        : 'border-transparent text-slate-600 hover:text-slate-900'
+                        ? 'border-accent text-accent'
+                        : 'border-transparent text-slate-400 hover:text-white'
                         }`}
                 >
                     <div className="flex items-center gap-2">
@@ -129,8 +129,8 @@ export default function MemoryExplorer() {
                 <button
                     onClick={() => setActiveTab('checkpoints')}
                     className={`px-6 py-3 font-medium transition-colors border-b-2 ${activeTab === 'checkpoints'
-                        ? 'border-indigo-600 text-indigo-600'
-                        : 'border-transparent text-slate-600 hover:text-slate-900'
+                        ? 'border-accent text-accent'
+                        : 'border-transparent text-slate-400 hover:text-white'
                         }`}
                 >
                     <div className="flex items-center gap-2">
@@ -147,19 +147,19 @@ export default function MemoryExplorer() {
                     <Card>
                         <div className="flex flex-col md:flex-row gap-4">
                             <div className="flex-1 relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-500" />
                                 <input
                                     type="text"
                                     placeholder="Search facts..."
                                     value={factSearch}
                                     onChange={(e) => setFactSearch(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="w-full pl-10 pr-4 py-2 border border-ink-700 rounded-none focus:ring-2 focus:ring-accent focus:border-accent"
                                 />
                             </div>
                             <select
                                 value={factCategory}
                                 onChange={(e) => setFactCategory(e.target.value)}
-                                className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="px-4 py-2 border border-ink-700 rounded-none focus:ring-2 focus:ring-accent focus:border-accent"
                             >
                                 <option value="all">All Categories</option>
                                 <option value="inventory">Inventory</option>
@@ -174,37 +174,37 @@ export default function MemoryExplorer() {
                     <Card title={`Semantic Facts (${filteredFacts.length})`}>
                         {loading ? (
                             <div className="text-center py-12">
-                                <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                                <p className="text-slate-500">Loading facts...</p>
+                                <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                                <p className="text-slate-400">Loading facts...</p>
                             </div>
                         ) : filteredFacts.length > 0 ? (
                             <div className="space-y-3">
                                 {filteredFacts.map((fact) => (
-                                    <div key={fact.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200 hover:border-indigo-300 transition-colors">
+                                    <div key={fact.id} className="p-4 bg-ink-900 rounded-none border border-ink-700 hover:border-accent/40 transition-colors">
                                         <div className="flex items-start justify-between mb-2">
                                             <div className="flex-1">
-                                                <p className="text-slate-900 font-medium">
-                                                    <span className="text-indigo-600">{fact.subject}</span>
-                                                    <span className="mx-2 text-slate-400">→</span>
-                                                    <span className="text-slate-700">{fact.predicate}</span>
-                                                    <span className="mx-2 text-slate-400">→</span>
-                                                    <span className="text-green-600">{fact.object}</span>
+                                                <p className="text-white font-medium">
+                                                    <span className="text-accent">{fact.subject}</span>
+                                                    <span className="mx-2 text-slate-500">→</span>
+                                                    <span className="text-slate-300">{fact.predicate}</span>
+                                                    <span className="mx-2 text-slate-500">→</span>
+                                                    <span className="text-emerald-400">{fact.object}</span>
                                                 </p>
-                                                <p className="text-sm text-slate-500 mt-1">Source: {fact.source}</p>
+                                                <p className="text-sm text-slate-400 mt-1">Source: {fact.source}</p>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${fact.confidence >= 0.8 ? 'bg-green-100 text-green-700' :
-                                                    fact.confidence >= 0.5 ? 'bg-blue-100 text-blue-700' :
-                                                        'bg-orange-100 text-orange-700'
+                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${fact.confidence >= 0.8 ? 'bg-emerald-500/15 text-emerald-400' :
+                                                    fact.confidence >= 0.5 ? 'bg-accent/10 text-accent' :
+                                                        'bg-orange-500/15 text-orange-400'
                                                     }`}>
                                                     {(fact.confidence * 100).toFixed(0)}% confident
                                                 </span>
-                                                <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
+                                                <span className="px-2 py-1 bg-accent/10 text-accent rounded text-xs font-medium">
                                                     {fact.fact_type}
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500">
                                             <Clock className="w-3 h-3" />
                                             <span>{new Date(fact.created_at).toLocaleString()}</span>
                                         </div>
@@ -214,8 +214,8 @@ export default function MemoryExplorer() {
                         ) : (
                             <div className="text-center py-12">
                                 <Tag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                                <p className="text-slate-500">No facts found</p>
-                                <p className="text-sm text-slate-400 mt-1">Try adjusting your search or category filter</p>
+                                <p className="text-slate-400">No facts found</p>
+                                <p className="text-sm text-slate-500 mt-1">Try adjusting your search or category filter</p>
                             </div>
                         )}
                     </Card>
@@ -228,11 +228,11 @@ export default function MemoryExplorer() {
                     {/* Filters */}
                     <Card>
                         <div className="flex items-center gap-2">
-                            <Filter className="w-5 h-5 text-slate-400" />
+                            <Filter className="w-5 h-5 text-slate-500" />
                             <select
                                 value={episodeType}
                                 onChange={(e) => setEpisodeType(e.target.value)}
-                                className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="flex-1 px-4 py-2 border border-ink-700 rounded-none focus:ring-2 focus:ring-accent focus:border-accent"
                             >
                                 <option value="all">All Event Types</option>
                                 <option value="decision_made">Decisions</option>
@@ -247,38 +247,38 @@ export default function MemoryExplorer() {
                     <Card title={`Episode Timeline (${episodes.length})`}>
                         {loading ? (
                             <div className="text-center py-12">
-                                <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                                <p className="text-slate-500">Loading episodes...</p>
+                                <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                                <p className="text-slate-400">Loading episodes...</p>
                             </div>
                         ) : episodes.length > 0 ? (
                             <div className="relative">
-                                <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-200"></div>
+                                <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-ink-700"></div>
                                 <div className="space-y-4">
                                     {episodes.map((episode) => (
                                         <div key={episode.id} className="relative pl-12">
                                             <div className={`absolute left-0 w-8 h-8 rounded-full flex items-center justify-center ${episode.outcome === 'success' ? 'bg-green-500' :
                                                 episode.outcome === 'failure' ? 'bg-red-500' :
-                                                    'bg-blue-500'
+                                                    'bg-accent'
                                                 }`}>
-                                                <div className="w-3 h-3 rounded-full bg-white"></div>
+                                                <div className="w-3 h-3 rounded-full bg-ink-800"></div>
                                             </div>
-                                            <div className="bg-white border border-slate-200 rounded-lg p-4 hover:border-indigo-300 transition-colors">
+                                            <div className="bg-ink-800 border border-ink-700 rounded-none p-4 hover:border-accent/40 transition-colors">
                                                 <div className="flex items-start justify-between mb-2">
                                                     <div>
-                                                        <p className="font-semibold text-slate-900">{episode.description}</p>
-                                                        <p className="text-sm text-slate-600 mt-1">
+                                                        <p className="font-semibold text-white">{episode.description}</p>
+                                                        <p className="text-sm text-slate-400 mt-1">
                                                             {episode.sku && <span className="font-medium">SKU: {episode.sku}</span>}
                                                         </p>
                                                     </div>
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${episode.outcome === 'success' ? 'bg-green-100 text-green-700' :
-                                                        episode.outcome === 'failure' ? 'bg-red-100 text-red-700' :
-                                                            'bg-blue-100 text-blue-700'
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${episode.outcome === 'success' ? 'bg-emerald-500/15 text-emerald-400' :
+                                                        episode.outcome === 'failure' ? 'bg-red-500/15 text-red-400' :
+                                                            'bg-accent/10 text-accent'
                                                         }`}>
                                                         {episode.outcome}
                                                     </span>
                                                 </div>
-                                                <div className="flex items-center gap-4 text-xs text-slate-500">
-                                                    <span className="px-2 py-1 bg-slate-100 rounded">{episode.event_type}</span>
+                                                <div className="flex items-center gap-4 text-xs text-slate-400">
+                                                    <span className="px-2 py-1 bg-ink-900 rounded">{episode.event_type}</span>
                                                     <span className="flex items-center gap-1">
                                                         <Clock className="w-3 h-3" />
                                                         {new Date(episode.timestamp).toLocaleString()}
@@ -292,7 +292,7 @@ export default function MemoryExplorer() {
                         ) : (
                             <div className="text-center py-12">
                                 <BookMarked className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                                <p className="text-slate-500">No episodes recorded yet</p>
+                                <p className="text-slate-400">No episodes recorded yet</p>
                             </div>
                         )}
                     </Card>
@@ -304,46 +304,46 @@ export default function MemoryExplorer() {
                 <Card title={`System Checkpoints (${checkpoints.length})`}>
                     {loading ? (
                         <div className="text-center py-12">
-                            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                            <p className="text-slate-500">Loading checkpoints...</p>
+                            <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                            <p className="text-slate-400">Loading checkpoints...</p>
                         </div>
                     ) : checkpoints.length > 0 ? (
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
-                                <thead className="bg-slate-50 border-b border-slate-200">
+                                <thead className="bg-ink-900 border-b border-ink-700">
                                     <tr>
-                                        <th className="text-left py-3 px-4 font-semibold text-slate-700">Checkpoint ID</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-slate-700">Cycle</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-slate-700">Goal</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-slate-700">Status</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-slate-700">Created</th>
-                                        <th className="text-right py-3 px-4 font-semibold text-slate-700">Actions</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-slate-300">Checkpoint ID</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-slate-300">Cycle</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-slate-300">Goal</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-slate-300">Status</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-slate-300">Created</th>
+                                        <th className="text-right py-3 px-4 font-semibold text-slate-300">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {checkpoints.map((checkpoint) => (
-                                        <tr key={checkpoint.id} className="border-b border-slate-100 hover:bg-slate-50">
+                                        <tr key={checkpoint.id} className="border-b border-ink-700 hover:bg-ink-900">
                                             <td className="py-3 px-4 font-mono text-xs">{checkpoint.checkpoint_id.slice(0, 16)}...</td>
                                             <td className="py-3 px-4">
-                                                <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-medium">
+                                                <span className="px-2 py-1 bg-accent/10 text-accent rounded text-xs font-medium">
                                                     #{checkpoint.cycle_number}
                                                 </span>
                                             </td>
-                                            <td className="py-3 px-4 text-slate-700">{checkpoint.goal}</td>
+                                            <td className="py-3 px-4 text-slate-300">{checkpoint.goal}</td>
                                             <td className="py-3 px-4">
                                                 {checkpoint.is_stable ? (
-                                                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                                                    <span className="px-2 py-1 bg-emerald-500/15 text-emerald-400 rounded-full text-xs font-medium">
                                                         Stable
                                                     </span>
                                                 ) : (
-                                                    <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">
+                                                    <span className="px-2 py-1 bg-orange-500/15 text-orange-400 rounded-full text-xs font-medium">
                                                         Unstable
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="py-3 px-4 text-slate-600">{new Date(checkpoint.created_at).toLocaleString()}</td>
+                                            <td className="py-3 px-4 text-slate-400">{new Date(checkpoint.created_at).toLocaleString()}</td>
                                             <td className="py-3 px-4 text-right">
-                                                <button className="text-indigo-600 hover:text-indigo-800 font-medium text-xs">
+                                                <button className="text-accent hover:text-accent font-medium text-xs">
                                                     Restore
                                                 </button>
                                             </td>
@@ -355,7 +355,7 @@ export default function MemoryExplorer() {
                     ) : (
                         <div className="text-center py-12">
                             <Archive className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                            <p className="text-slate-500">No checkpoints available</p>
+                            <p className="text-slate-400">No checkpoints available</p>
                         </div>
                     )}
                 </Card>

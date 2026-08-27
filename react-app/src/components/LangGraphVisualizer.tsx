@@ -47,10 +47,10 @@ export default function LangGraphVisualizer({ currentStage, completedStages, err
     const getNodeStyles = (state: string, interactionType?: string) => {
         switch (state) {
             case 'interacting':
-                let colorClass = 'border-blue-500 bg-blue-50 text-blue-900';
-                if (interactionType === 'rejection') colorClass = 'border-red-500 bg-red-50 text-red-900';
-                if (interactionType === 'counter_argument') colorClass = 'border-orange-500 bg-orange-50 text-orange-900';
-                if (interactionType === 'override_approval') colorClass = 'border-green-500 bg-green-50 text-green-900';
+                let colorClass = 'border-accent bg-accent/10 text-accent';
+                if (interactionType === 'rejection') colorClass = 'border-red-500 bg-red-500/10 text-red-300';
+                if (interactionType === 'counter_argument') colorClass = 'border-orange-500 bg-orange-500/10 text-orange-300';
+                if (interactionType === 'override_approval') colorClass = 'border-green-500 bg-emerald-500/10 text-emerald-300';
 
                 return {
                     border: `${colorClass.split(' ')[0]} border-2`,
@@ -61,34 +61,34 @@ export default function LangGraphVisualizer({ currentStage, completedStages, err
                 };
             case 'active':
                 return {
-                    border: 'border-blue-500 border-2',
-                    bg: 'bg-blue-50',
-                    text: 'text-blue-900',
-                    icon: 'text-blue-600',
+                    border: 'border-accent border-2',
+                    bg: 'bg-accent/10',
+                    text: 'text-accent',
+                    icon: 'text-accent',
                     pulse: 'animate-pulse',
                 };
             case 'complete':
                 return {
                     border: 'border-green-500 border-2',
-                    bg: 'bg-green-50',
-                    text: 'text-green-900',
-                    icon: 'text-green-600',
+                    bg: 'bg-emerald-500/10',
+                    text: 'text-emerald-300',
+                    icon: 'text-emerald-400',
                     pulse: '',
                 };
             case 'error':
                 return {
                     border: 'border-red-500 border-2',
-                    bg: 'bg-red-50',
-                    text: 'text-red-900',
-                    icon: 'text-red-600',
+                    bg: 'bg-red-500/10',
+                    text: 'text-red-300',
+                    icon: 'text-red-400',
                     pulse: '',
                 };
             default:
                 return {
-                    border: 'border-gray-300',
-                    bg: 'bg-gray-50',
-                    text: 'text-gray-600',
-                    icon: 'text-gray-400',
+                    border: 'border-ink-700',
+                    bg: 'bg-ink-900',
+                    text: 'text-slate-400',
+                    icon: 'text-slate-500',
                     pulse: '',
                 };
         }
@@ -99,22 +99,22 @@ export default function LangGraphVisualizer({ currentStage, completedStages, err
             case 'interacting':
                 return <MessageSquare className="w-4 h-4 animate-bounce" />;
             case 'active':
-                return <Clock className="w-4 h-4 text-blue-600 animate-spin" />;
+                return <Clock className="w-4 h-4 text-accent animate-spin" />;
             case 'complete':
-                return <CheckCircle className="w-4 h-4 text-green-600" />;
+                return <CheckCircle className="w-4 h-4 text-emerald-400" />;
             case 'error':
-                return <AlertCircle className="w-4 h-4 text-red-600" />;
+                return <AlertCircle className="w-4 h-4 text-red-400" />;
             default:
-                return <Clock className="w-4 h-4 text-gray-400" />;
+                return <Clock className="w-4 h-4 text-slate-500" />;
         }
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="bg-ink-800 rounded-none shadow-lg p-6 mb-8">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">🔄 Agent Workflow</h2>
+                <h2 className="text-2xl font-bold text-white">🔄 Agent Workflow</h2>
                 {activeInteraction && (
-                    <div className="flex items-center gap-2 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold animate-pulse">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-amber-500/15 text-amber-300 rounded-full text-xs font-bold animate-pulse">
                         <MessageSquare className="w-3 h-3" />
                         Negotiation in Progress: {activeInteraction.from} ↔ {activeInteraction.to}
                     </div>
@@ -135,7 +135,7 @@ export default function LangGraphVisualizer({ currentStage, completedStages, err
                                     {/* Node */}
                                     <div className="flex flex-col items-center flex-1 relative group">
                                         <div
-                                            className={`${styles.border} ${styles.bg} ${styles.pulse} rounded-lg p-4 w-full transition-all duration-300 hover:shadow-md z-10 relative`}
+                                            className={`${styles.border} ${styles.bg} ${styles.pulse} rounded-none p-4 w-full transition-all duration-300 hover:shadow-md z-10 relative`}
                                         >
                                             <div className="flex flex-col items-center gap-2">
                                                 <Icon className={`w-8 h-8 ${styles.icon}`} />
@@ -164,7 +164,7 @@ export default function LangGraphVisualizer({ currentStage, completedStages, err
                                     {/* Arrow */}
                                     {index < WORKFLOW_NODES.length - 1 && (
                                         <div className="flex items-center relative">
-                                            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                             </svg>
 
@@ -198,7 +198,7 @@ export default function LangGraphVisualizer({ currentStage, completedStages, err
                             <React.Fragment key={node.id}>
                                 {/* Node */}
                                 <div
-                                    className={`${styles.border} ${styles.bg} ${styles.pulse} rounded-lg p-4 transition-all duration-300`}
+                                    className={`${styles.border} ${styles.bg} ${styles.pulse} rounded-none p-4 transition-all duration-300`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
@@ -214,7 +214,7 @@ export default function LangGraphVisualizer({ currentStage, completedStages, err
                                 {/* Arrow */}
                                 {index < WORKFLOW_NODES.length - 1 && (
                                     <div className="flex justify-center">
-                                        <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                         </svg>
                                     </div>
@@ -226,23 +226,23 @@ export default function LangGraphVisualizer({ currentStage, completedStages, err
             </div>
 
             {/* Legend */}
-            <div className="mt-6 pt-4 border-t border-gray-200">
+            <div className="mt-6 pt-4 border-t border-ink-700">
                 <div className="flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-600">Pending</span>
+                        <Clock className="w-4 h-4 text-slate-500" />
+                        <span className="text-slate-400">Pending</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-blue-600 animate-spin" />
-                        <span className="text-gray-600">Active</span>
+                        <Clock className="w-4 h-4 text-accent animate-spin" />
+                        <span className="text-slate-400">Active</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <MessageSquare className="w-4 h-4 text-orange-600" />
-                        <span className="text-gray-600">Negotiating</span>
+                        <MessageSquare className="w-4 h-4 text-orange-400" />
+                        <span className="text-slate-400">Negotiating</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                        <span className="text-gray-600">Complete</span>
+                        <CheckCircle className="w-4 h-4 text-emerald-400" />
+                        <span className="text-slate-400">Complete</span>
                     </div>
                 </div>
             </div>

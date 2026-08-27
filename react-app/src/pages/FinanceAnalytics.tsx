@@ -67,8 +67,8 @@ export default function FinanceAnalytics() {
         return (
             <div className="flex items-center justify-center h-96">
                 <div className="text-center">
-                    <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-slate-500 font-medium">Loading finance analytics...</p>
+                    <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-slate-400 font-medium">Loading finance analytics...</p>
                 </div>
             </div>
         );
@@ -86,11 +86,11 @@ export default function FinanceAnalytics() {
         <div className="space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                    <DollarSign className="w-7 h-7 text-green-600" />
+                <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                    <DollarSign className="w-7 h-7 text-emerald-400" />
                     Finance Analytics & Insights
                 </h1>
-                <p className="text-slate-500 mt-1">Track budget utilization, approval rates, and ROI performance</p>
+                <p className="text-slate-400 mt-1">Track budget utilization, approval rates, and ROI performance</p>
             </div>
 
             {/* KPI Cards */}
@@ -98,12 +98,12 @@ export default function FinanceAnalytics() {
                 <Card className="border-l-4 border-l-green-500">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-sm font-medium text-slate-500">Total Budget</p>
-                            <h3 className="text-2xl font-bold text-slate-900 mt-1">${stats.totalBudget.toLocaleString()}</h3>
-                            <p className="text-xs text-slate-400 mt-2">Per cycle allocation</p>
+                            <p className="text-sm font-medium text-slate-400">Total Budget</p>
+                            <h3 className="text-2xl font-bold text-white mt-1">${stats.totalBudget.toLocaleString()}</h3>
+                            <p className="text-xs text-slate-500 mt-2">Per cycle allocation</p>
                         </div>
-                        <div className="p-3 bg-green-50 rounded-xl">
-                            <DollarSign className="w-6 h-6 text-green-600" />
+                        <div className="p-3 bg-emerald-500/10 rounded-none">
+                            <DollarSign className="w-6 h-6 text-emerald-400" />
                         </div>
                     </div>
                 </Card>
@@ -111,15 +111,15 @@ export default function FinanceAnalytics() {
                 <Card className="border-l-4 border-l-blue-500">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-sm font-medium text-slate-500">Approval Rate</p>
-                            <h3 className="text-2xl font-bold text-slate-900 mt-1">{(stats.approvalRate * 100).toFixed(1)}%</h3>
-                            <div className="flex items-center mt-2 text-xs text-green-600">
+                            <p className="text-sm font-medium text-slate-400">Approval Rate</p>
+                            <h3 className="text-2xl font-bold text-white mt-1">{(stats.approvalRate * 100).toFixed(1)}%</h3>
+                            <div className="flex items-center mt-2 text-xs text-emerald-400">
                                 <TrendingUp className="w-3 h-3 mr-1" />
                                 <span className="font-medium">Efficient decisions</span>
                             </div>
                         </div>
-                        <div className="p-3 bg-blue-50 rounded-xl">
-                            <CheckCircle className="w-6 h-6 text-blue-600" />
+                        <div className="p-3 bg-accent/10 rounded-none">
+                            <CheckCircle className="w-6 h-6 text-accent" />
                         </div>
                     </div>
                 </Card>
@@ -127,12 +127,12 @@ export default function FinanceAnalytics() {
                 <Card className="border-l-4 border-l-purple-500">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-sm font-medium text-slate-500">Negotiation Wins</p>
-                            <h3 className="text-2xl font-bold text-slate-900 mt-1">{stats.overrideCount}</h3>
-                            <p className="text-xs text-purple-600 mt-2 font-medium">Overrides granted</p>
+                            <p className="text-sm font-medium text-slate-400">Negotiation Wins</p>
+                            <h3 className="text-2xl font-bold text-white mt-1">{stats.overrideCount}</h3>
+                            <p className="text-xs text-accent mt-2 font-medium">Overrides granted</p>
                         </div>
-                        <div className="p-3 bg-purple-50 rounded-xl">
-                            <Award className="w-6 h-6 text-purple-600" />
+                        <div className="p-3 bg-accent/10 rounded-none">
+                            <Award className="w-6 h-6 text-accent" />
                         </div>
                     </div>
                 </Card>
@@ -140,14 +140,14 @@ export default function FinanceAnalytics() {
                 <Card className="border-l-4 border-l-orange-500">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-sm font-medium text-slate-500">Avg Savings</p>
-                            <h3 className="text-2xl font-bold text-slate-900 mt-1">
+                            <p className="text-sm font-medium text-slate-400">Avg Savings</p>
+                            <h3 className="text-2xl font-bold text-white mt-1">
                                 ${((stats.totalBudget - stats.totalSpent) || 0).toLocaleString()}
                             </h3>
-                            <p className="text-xs text-slate-400 mt-2">Budget remaining</p>
+                            <p className="text-xs text-slate-500 mt-2">Budget remaining</p>
                         </div>
-                        <div className="p-3 bg-orange-50 rounded-xl">
-                            <TrendingUp className="w-6 h-6 text-orange-600" />
+                        <div className="p-3 bg-orange-500/10 rounded-none">
+                            <TrendingUp className="w-6 h-6 text-orange-400" />
                         </div>
                     </div>
                 </Card>
@@ -219,45 +219,45 @@ export default function FinanceAnalytics() {
             <Card title="Recent Finance Decisions">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
-                        <thead className="bg-slate-50 border-b border-slate-200">
+                        <thead className="bg-ink-900 border-b border-ink-700">
                             <tr>
-                                <th className="text-left py-3 px-4 font-semibold text-slate-700">SKU</th>
-                                <th className="text-left py-3 px-4 font-semibold text-slate-700">Cost</th>
-                                <th className="text-left py-3 px-4 font-semibold text-slate-700">ROI</th>
-                                <th className="text-left py-3 px-4 font-semibold text-slate-700">Decision</th>
-                                <th className="text-left py-3 px-4 font-semibold text-slate-700">Reason</th>
+                                <th className="text-left py-3 px-4 font-semibold text-slate-300">SKU</th>
+                                <th className="text-left py-3 px-4 font-semibold text-slate-300">Cost</th>
+                                <th className="text-left py-3 px-4 font-semibold text-slate-300">ROI</th>
+                                <th className="text-left py-3 px-4 font-semibold text-slate-300">Decision</th>
+                                <th className="text-left py-3 px-4 font-semibold text-slate-300">Reason</th>
                             </tr>
                         </thead>
                         <tbody>
                             {financeSummary?.recent_decisions?.slice(0, 10).map((decision: any, idx: number) => (
-                                <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50">
+                                <tr key={idx} className="border-b border-ink-700 hover:bg-ink-900">
                                     <td className="py-3 px-4 font-medium">{decision.sku}</td>
                                     <td className="py-3 px-4">${decision.total_cost?.toFixed(2)}</td>
                                     <td className="py-3 px-4">
-                                        <span className={`font-medium ${decision.roi > 2 ? 'text-green-600' :
-                                            decision.roi > 1 ? 'text-blue-600' : 'text-orange-600'
+                                        <span className={`font-medium ${decision.roi > 2 ? 'text-emerald-400' :
+                                            decision.roi > 1 ? 'text-accent' : 'text-orange-400'
                                             }`}>
                                             {decision.roi?.toFixed(2)}x
                                         </span>
                                     </td>
                                     <td className="py-3 px-4">
                                         {decision.approved ? (
-                                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-500/15 text-emerald-400 rounded-full text-xs font-medium">
                                                 <CheckCircle className="w-3 h-3" />
                                                 Approved
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-500/15 text-red-400 rounded-full text-xs font-medium">
                                                 <XCircle className="w-3 h-3" />
                                                 Rejected
                                             </span>
                                         )}
                                     </td>
-                                    <td className="py-3 px-4 text-slate-600 truncate max-w-xs">{decision.reason}</td>
+                                    <td className="py-3 px-4 text-slate-400 truncate max-w-xs">{decision.reason}</td>
                                 </tr>
                             )) || (
                                     <tr>
-                                        <td colSpan={5} className="py-8 text-center text-slate-500">
+                                        <td colSpan={5} className="py-8 text-center text-slate-400">
                                             No recent decisions available
                                         </td>
                                     </tr>
