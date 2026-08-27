@@ -130,13 +130,13 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* NARRATIVE SECTION */}
-      <div className="bg-gradient-to-r from-accent to-accent-hover rounded-none p-8 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-ink-800 border border-ink-700 rounded-none p-8 text-white shadow-panel relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-ink-800/20 backdrop-blur-sm rounded-none">
-              <MessageSquare className="w-6 h-6 text-white" />
+            <div className="p-2 bg-accent/15 rounded-none">
+              <MessageSquare className="w-6 h-6 text-accent" />
             </div>
-            <h2 className="text-xl font-bold">Agent Update</h2>
+            <h1 className="font-heading text-3xl font-bold uppercase tracking-tight">Agent Update</h1>
           </div>
           <p className="text-lg leading-relaxed font-medium opacity-95 max-w-3xl">
             "{narrative}"
@@ -196,10 +196,10 @@ export default function Dashboard() {
           color="bg-red-500/10"
         />
         <KPI
-          icon={<Package className="w-6 h-6 text-accent" />}
+          icon={<Package className="w-6 h-6 text-slate-300" />}
           label="Total SKUs"
           value={stats.inventoryCount}
-          color="bg-accent/10"
+          color="bg-ink-700"
         />
       </div>
 
@@ -213,12 +213,12 @@ export default function Dashboard() {
           </h2>
 
           {pendingOrders.length === 0 ? (
-            <div className="bg-ink-800 rounded-none p-12 text-center border border-ink-700 shadow-sm border-dashed">
-              <div className="w-16 h-16 bg-ink-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-slate-300" />
+            <div className="bg-ink-800 rounded-none px-6 py-7 text-center border border-ink-700 shadow-sm border-dashed">
+              <div className="w-10 h-10 bg-ink-900 rounded-full flex items-center justify-center mx-auto mb-2.5">
+                <CheckCircle className="w-5 h-5 text-slate-300" />
               </div>
-              <h3 className="text-lg font-medium text-white">All Caught Up!</h3>
-              <p className="text-slate-400 mt-2">The agent hasn't found any new issues to solve.</p>
+              <h3 className="text-base font-medium text-white">All Caught Up!</h3>
+              <p className="text-sm text-slate-400 mt-1">The agent hasn't found any new issues to solve.</p>
             </div>
           ) : (
             <div className="bg-ink-800 rounded-none shadow-sm border border-ink-700 overflow-hidden animate-fade-in">

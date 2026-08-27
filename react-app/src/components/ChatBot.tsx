@@ -81,6 +81,12 @@ const ChatBot: React.FC = () => {
         <>
             {/* Floating Button */}
             <motion.button
+                type="button"
+                /* Icon-only gave no clue what it did. The label is visible from
+                   sm upwards and the aria-label/title cover the icon-only
+                   layout on small screens and for assistive tech. */
+                aria-label="Ask the supply chain agent"
+                title="Ask the supply chain agent"
                 className="fixed bottom-6 right-6 bg-accent text-white p-4 rounded-full shadow-lg hover:bg-accent-hover z-50 flex items-center justify-center"
                 onClick={() => setIsOpen(true)}
                 initial={{ scale: 0 }}

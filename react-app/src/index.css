@@ -61,9 +61,11 @@ pre {
 
 /* Small uppercase eyebrow label that precedes section headings. */
 .eyebrow {
-  font-size: 10px;
+  /* 12px is the minimum comfortable body size; the wide tracking below keeps
+     the label feeling small without dropping under it. */
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
 }

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     ShoppingCart, Home, Truck,
-    Brain, LogOut, Cpu, Menu, ChevronRight
+    Brain, LogOut, Cpu, Menu
 } from 'lucide-react';
 import { logout } from '../auth';
 
@@ -88,7 +88,7 @@ export default function Layout({ children, setAuthenticated }: LayoutProps) {
                                     <Icon className={`w-5 h-5 transition-colors ${active ? 'text-black' : 'text-slate-500 group-hover:text-accent'}`} />
                                     <span className="text-xs font-bold uppercase tracking-widest">{label}</span>
                                 </div>
-                                {active && <ChevronRight className="w-4 h-4 text-black/60" />}
+                                
                             </Link>
                         );
                     })}
