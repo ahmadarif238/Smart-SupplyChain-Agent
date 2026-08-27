@@ -102,3 +102,13 @@ list_products.py
 
 # Local fallback datastore (created at runtime)
 supplychain.db
+
+# Binary assets (Excluded to prevent Hugging Face Hub rejections)
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.gif
+*.zip
+*.tar
+*.gz
