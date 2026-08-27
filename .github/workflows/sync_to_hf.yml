@@ -3,15 +3,47 @@ on:
   push:
     branches: [main] # or master, whichever you use
 
+  # Allows re-running the sync by hand from the Actions tab.
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
+
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://ArifAntarctic7:$HF_TOKEN@huggingface.co/spaces/ArifAntarctic7/Smart-Supply-Chain-Agent main
+        run: |
+          set -e
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
+          # Publish the current tree as a single orphan commit rather than
+          # pushing full history.
+          #
+          # Why: commit c1799e7 added a ~20MB .mp4 to this repo. Hugging Face
+          # rejects any non-LFS file over 10MB, so `git push` of the real
+          # history failed -- silently leaving the Space pinned to whatever
+          # was last deployed successfully (it had been failing since
+          # 2026-02). A Space only ever needs the current state, so publishing
+          # one flat commit sidesteps the oversized blob without rewriting
+          # this repository's history.
+          git checkout --orphan hf-deploy
+          git add -A
+          git commit -m "Deploy ${GITHUB_SHA::7} from ${GITHUB_REF_NAME}"
+
+          # Fail loudly if the tree still contains something HF will reject.
+          if find . -path ./.git -prune -o -type f -size +10M -print | grep -q .; then
+            echo "::error::Files over 10MB present; Hugging Face will reject the push:"
+            find . -path ./.git -prune -o -type f -size +10M -print
+            exit 1
+          fi
+
+          git push -f \
+            "https://ArifAntarctic7:$HF_TOKEN@huggingface.co/spaces/ArifAntarctic7/Smart-Supply-Chain-Agent" \
+            hf-deploy:main
